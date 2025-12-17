@@ -1,12 +1,23 @@
 import { db, schema } from '../db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 
 /**
  * User Service - Handles all user-related database operations
  */
 
+// Check if database is available
+function checkDb() {
+  if (!db) {
+    return { success: false, error: 'Database not configured' };
+  }
+  return { success: true };
+}
+
 // Create a new user
 export async function createUser(userData) {
+  const dbCheck = checkDb();
+  if (!dbCheck.success) return dbCheck;
+
   try {
     const [user] = await db.insert(schema.users).values({
       name: userData.name || 'Champion',
@@ -23,6 +34,9 @@ export async function createUser(userData) {
 
 // Get user by ID
 export async function getUserById(userId) {
+  const dbCheck = checkDb();
+  if (!dbCheck.success) return dbCheck;
+
   try {
     const [user] = await db
       .select()
@@ -38,6 +52,9 @@ export async function getUserById(userId) {
 
 // Get user by auth ID (for authentication)
 export async function getUserByAuthId(authId) {
+  const dbCheck = checkDb();
+  if (!dbCheck.success) return dbCheck;
+
   try {
     const [user] = await db
       .select()
@@ -53,11 +70,14 @@ export async function getUserByAuthId(authId) {
 
 // Update user XP
 export async function addUserXP(userId, xpAmount) {
+  const dbCheck = checkDb();
+  if (!dbCheck.success) return dbCheck;
+
   try {
     const [user] = await db
       .update(schema.users)
       .set({
-        xp: db.raw(`xp + ${xpAmount}`),
+        xp: sql`${schema.users.xp} + ${xpAmount}`,
         updatedAt: new Date()
       })
       .where(eq(schema.users.id, userId))
@@ -91,15 +111,38 @@ export async function updateUserStreak(userId, newStreak) {
 
 // Complete morning ritual
 export async function completeMorningRitual(userId, focus, xpEarned) {
+  const dbCheck = checkDb();
+  if (!dbCheck.success) return dbCheck;
+
   try {
+    // First, check if already completed today
+    const [existingUser] = await db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.id, userId));
+
+    if (existingUser && existingUser.lastMorningRitual) {
+      const lastRitual = new Date(existingUser.lastMorningRitual);
+      const today = new Date();
+      const isSameDay = lastRitual.toDateString() === today.toDateString();
+
+      if (isSameDay) {
+        return {
+          success: false,
+          error: 'Morning ritual already completed today',
+          alreadyCompleted: true
+        };
+      }
+    }
+
     // Update user
     const [user] = await db
       .update(schema.users)
       .set({
         morningRitualCompleted: true,
         lastMorningRitual: new Date(),
-        xp: db.raw(`xp + ${xpEarned}`),
-        streak: db.raw('streak + 1'),
+        xp: sql`${schema.users.xp} + ${xpEarned}`,
+        streak: sql`${schema.users.streak} + 1`,
         updatedAt: new Date()
       })
       .where(eq(schema.users.id, userId))

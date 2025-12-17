@@ -5,18 +5,32 @@ import * as schema from './schema';
 // Get database URL from environment variable
 const databaseUrl = import.meta.env.VITE_DATABASE_URL || process.env.DATABASE_URL;
 
-if (!databaseUrl) {
-  throw new Error(
-    'DATABASE_URL is not set. Please add it to your .env.local file.\n' +
+let db = null;
+
+// Check if database URL is valid (not a placeholder)
+const isValidUrl = databaseUrl &&
+                   databaseUrl !== 'your_neon_connection_string_here' &&
+                   databaseUrl.startsWith('postgres');
+
+if (!isValidUrl) {
+  console.warn(
+    '⚠️ DATABASE_URL is not configured. Running in local-only mode.\n' +
+    'To enable cloud sync, add your Neon connection string to .env.local\n' +
     'Get your connection string from: https://console.neon.tech'
   );
+  db = null;
+} else {
+  try {
+    // Create Neon HTTP connection
+    const sql = neon(databaseUrl);
+    // Create Drizzle instance
+    db = drizzle(sql, { schema });
+    console.log('✅ Database connected successfully');
+  } catch (error) {
+    console.error('❌ Database connection failed:', error.message);
+    db = null;
+  }
 }
 
-// Create Neon HTTP connection
-const sql = neon(databaseUrl);
-
-// Create Drizzle instance
-export const db = drizzle(sql, { schema });
-
-// Export schema for use in queries
-export { schema };
+// Export db (will be null if not configured)
+export { db, schema };

@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, integer, boolean, timestamp, jsonb, text } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, integer, boolean, timestamp, jsonb, text, unique, index } from 'drizzle-orm/pg-core';
 
 // Users table
 export const users = pgTable('users', {
@@ -24,7 +24,10 @@ export const completedMissions = pgTable('completed_missions', {
   weekNumber: integer('week_number').notNull(),
   xpEarned: integer('xp_earned').notNull(),
   completedAt: timestamp('completed_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  // Unique constraint: user can only complete each mission once
+  uniqueUserMission: unique('unique_user_mission').on(table.userId, table.weekNumber),
+}));
 
 // Badges
 export const badges = pgTable('badges', {

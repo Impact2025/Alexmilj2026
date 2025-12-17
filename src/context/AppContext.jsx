@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { getCurrentVehicle, getNextVehicle, getProgressToNext } from '../data/vehicles';
 import { getQuoteOfTheDay } from '../data/quotes';
 import * as userService from '../services/userService';
 import * as missionService from '../services/missionService';
+import { useToast } from './ToastContext';
+import { validateName, validateXP, validateMoney } from '../utils/validation';
 
 const AppContext = createContext();
 
@@ -31,11 +33,27 @@ export const XP_REWARDS = {
 };
 
 export function AppProvider({ children }) {
-  const { isSignedIn, user: clerkUser, isLoaded } = useUser();
+  const toast = useToast();
+
+  // Try to use Clerk, but handle if it's not available
+  let isSignedIn = false;
+  let clerkUser = null;
+  let isLoaded = true;
+
+  try {
+    const clerkData = useUser();
+    isSignedIn = clerkData.isSignedIn || false;
+    clerkUser = clerkData.user;
+    isLoaded = clerkData.isLoaded;
+  } catch (error) {
+    // Clerk not available, use local mode
+    console.log('Clerk not configured, running in local-only mode');
+  }
+
   const [user, setUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [syncMode, setSyncMode] = useState('auto'); // 'auto', 'local', 'cloud'
+  const [syncMode, setSyncMode] = useState('local'); // 'auto', 'local', 'cloud'
 
   // Load user data from localStorage or database
   useEffect(() => {
@@ -127,12 +145,21 @@ export function AppProvider({ children }) {
     }
   };
 
-  // Save to localStorage whenever user state changes (for offline support)
+  // Debounced localStorage save to improve performance
   useEffect(() => {
-    if (user && syncMode === 'local') {
-      localStorage.setItem('reis-user-data', JSON.stringify(user));
-    }
-  }, [user, syncMode]);
+    if (!user || syncMode !== 'local') return;
+
+    const timeoutId = setTimeout(() => {
+      try {
+        localStorage.setItem('reis-user-data', JSON.stringify(user));
+      } catch (error) {
+        console.error('Failed to save to localStorage:', error);
+        toast.error('Kon voortgang niet opslaan');
+      }
+    }, 500); // Debounce by 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [user, syncMode, toast]);
 
   // Computed values
   const currentVehicle = user ? getCurrentVehicle(user.xp) : null;
@@ -153,7 +180,20 @@ export function AppProvider({ children }) {
   };
 
   const completeMorningRitual = async (focus) => {
-    const newStreak = user.morningRitualCompleted ? user.streak : user.streak + 1;
+    // Check if already completed today
+    if (user.lastMorningRitual) {
+      const lastRitual = new Date(user.lastMorningRitual);
+      const today = new Date();
+      const isSameDay = lastRitual.toDateString() === today.toDateString();
+
+      if (isSameDay) {
+        toast.warning('Je hebt je ochtendritueel al voltooid vandaag!');
+        return { success: false, error: 'Already completed today' };
+      }
+    }
+
+    // Calculate new streak
+    const newStreak = user.streak + 1;
     let bonusXP = 0;
 
     if (newStreak === 7) bonusXP = XP_REWARDS.STREAK_BONUS_7;
@@ -171,6 +211,9 @@ export function AppProvider({ children }) {
           morningRitualCompleted: true,
           lastMorningRitual: result.data.lastMorningRitual,
         }));
+        toast.success(`🔥 Ochtendritueel voltooid! +${totalXP} XP!`);
+      } else {
+        toast.error(result.error || 'Er ging iets mis');
       }
     } else {
       setUser(prev => ({
@@ -180,6 +223,7 @@ export function AppProvider({ children }) {
         morningRitualCompleted: true,
         lastMorningRitual: new Date().toISOString(),
       }));
+      toast.success(`🔥 Ochtendritueel voltooid! +${totalXP} XP!`);
     }
   };
 
@@ -193,6 +237,11 @@ export function AppProvider({ children }) {
           completedMissions: [...prev.completedMissions, weekNumber],
           currentWeek: Math.max(prev.currentWeek, weekNumber + 1),
         }));
+        toast.success(`🎯 Week ${weekNumber} voltooid! +${xpReward} XP!`);
+      } else if (result.alreadyCompleted) {
+        toast.warning('Deze missie heb je al voltooid!');
+      } else {
+        toast.error(result.error || 'Er ging iets mis bij het voltooien van de missie');
       }
     } else {
       setUser(prev => ({
@@ -201,6 +250,7 @@ export function AppProvider({ children }) {
         completedMissions: [...prev.completedMissions, weekNumber],
         currentWeek: Math.max(prev.currentWeek, weekNumber + 1),
       }));
+      toast.success(`🎯 Week ${weekNumber} voltooid! +${xpReward} XP!`);
     }
   };
 
@@ -224,24 +274,52 @@ export function AppProvider({ children }) {
   };
 
   const updateSavedMoney = async (amount) => {
+    // Validate money amount
+    const validation = validateMoney(amount);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return { success: false, error: validation.error };
+    }
+
     if (syncMode === 'cloud' && dbUser) {
-      const result = await userService.updateUserMoney(dbUser.id, amount, user.earnedMoney);
+      const result = await userService.updateUserMoney(dbUser.id, validation.value, user.earnedMoney);
       if (result.success) {
-        setUser(prev => ({ ...prev, savedMoney: amount }));
+        setUser(prev => ({ ...prev, savedMoney: validation.value }));
+        toast.success('Gespaard geld bijgewerkt!');
+        return result;
+      } else {
+        toast.error(result.error || 'Kon geld niet bijwerken');
+        return result;
       }
     } else {
-      setUser(prev => ({ ...prev, savedMoney: amount }));
+      setUser(prev => ({ ...prev, savedMoney: validation.value }));
+      toast.success('Gespaard geld bijgewerkt!');
+      return { success: true };
     }
   };
 
   const updateEarnedMoney = async (amount) => {
+    // Validate money amount
+    const validation = validateMoney(amount);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return { success: false, error: validation.error };
+    }
+
     if (syncMode === 'cloud' && dbUser) {
-      const result = await userService.updateUserMoney(dbUser.id, user.savedMoney, amount);
+      const result = await userService.updateUserMoney(dbUser.id, user.savedMoney, validation.value);
       if (result.success) {
-        setUser(prev => ({ ...prev, earnedMoney: amount }));
+        setUser(prev => ({ ...prev, earnedMoney: validation.value }));
+        toast.success('Verdiend geld bijgewerkt!');
+        return result;
+      } else {
+        toast.error(result.error || 'Kon geld niet bijwerken');
+        return result;
       }
     } else {
-      setUser(prev => ({ ...prev, earnedMoney: amount }));
+      setUser(prev => ({ ...prev, earnedMoney: validation.value }));
+      toast.success('Verdiend geld bijgewerkt!');
+      return { success: true };
     }
   };
 
@@ -256,13 +334,27 @@ export function AppProvider({ children }) {
   };
 
   const updateUserName = async (name) => {
+    // Validate name
+    const validation = validateName(name);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return { success: false, error: validation.error };
+    }
+
     if (syncMode === 'cloud' && dbUser) {
-      const result = await userService.updateUserName(dbUser.id, name);
+      const result = await userService.updateUserName(dbUser.id, validation.value);
       if (result.success) {
-        setUser(prev => ({ ...prev, name }));
+        setUser(prev => ({ ...prev, name: validation.value }));
+        toast.success('Naam bijgewerkt!');
+        return result;
+      } else {
+        toast.error(result.error || 'Kon naam niet bijwerken');
+        return result;
       }
     } else {
-      setUser(prev => ({ ...prev, name }));
+      setUser(prev => ({ ...prev, name: validation.value }));
+      toast.success('Naam bijgewerkt!');
+      return { success: true };
     }
   };
 

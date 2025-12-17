@@ -1,5 +1,5 @@
 import { db, schema } from '../db';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 
 /**
  * Mission Service - Handles all mission-related database operations
@@ -41,8 +41,8 @@ export async function completeMission(userId, weekNumber, xpEarned) {
     await db
       .update(schema.users)
       .set({
-        xp: db.raw(`xp + ${xpEarned}`),
-        currentWeek: db.raw(`GREATEST(current_week, ${weekNumber + 1})`),
+        xp: sql`${schema.users.xp} + ${xpEarned}`,
+        currentWeek: sql`GREATEST(${schema.users.currentWeek}, ${weekNumber + 1})`,
         updatedAt: new Date()
       })
       .where(eq(schema.users.id, userId));
@@ -167,7 +167,7 @@ export async function submitSundayReview(userId, weekNumber, videoUrl, notes, xp
     await db
       .update(schema.users)
       .set({
-        xp: db.raw(`xp + ${xpEarned}`),
+        xp: sql`${schema.users.xp} + ${xpEarned}`,
         updatedAt: new Date()
       })
       .where(eq(schema.users.id, userId));

@@ -1,49 +1,29 @@
 import React from 'react';
-import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/clerk-react';
-import { User, LogIn } from 'lucide-react';
+import { User } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 export default function AuthButton() {
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn } = useApp();
 
-  if (!isLoaded) {
+  // Show local mode indicator (Clerk not configured)
+  if (!isSignedIn) {
     return (
-      <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-800 animate-pulse">
-        <div className="w-8 h-8 rounded-full bg-dark-700"></div>
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-dark-800/50 border border-dark-700">
+          <User size={16} className="text-amber-500" />
+          <span className="text-xs font-medium text-dark-300">Local Mode</span>
+        </div>
       </div>
     );
   }
 
-  if (isSignedIn) {
-    return (
-      <div className="flex items-center gap-3">
-        <UserButton
-          appearance={{
-            elements: {
-              avatarBox: "w-10 h-10 rounded-full border-2 border-lambo-500",
-              userButtonPopoverCard: "bg-dark-900 border border-dark-700",
-              userButtonPopoverActionButton: "hover:bg-dark-800",
-            },
-          }}
-        />
-      </div>
-    );
-  }
-
+  // If signed in (when Clerk is configured), show user info
   return (
     <div className="flex items-center gap-2">
-      <SignInButton mode="modal">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-800 hover:bg-dark-700 transition-colors border border-dark-700">
-          <LogIn size={18} className="text-lambo-500" />
-          <span className="text-sm font-medium text-white">Inloggen</span>
-        </button>
-      </SignInButton>
-
-      <SignUpButton mode="modal">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-lambo-500 hover:bg-lambo-600 transition-colors">
-          <User size={18} className="text-dark-900" />
-          <span className="text-sm font-medium text-dark-900">Aanmelden</span>
-        </button>
-      </SignUpButton>
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30">
+        <User size={16} className="text-amber-500" />
+        <span className="text-xs font-medium text-amber-400">Signed In</span>
+      </div>
     </div>
   );
 }
