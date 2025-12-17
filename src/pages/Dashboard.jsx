@@ -9,12 +9,25 @@ import { getMissionByWeek } from '../data/missions';
 import { Flame, Zap, PiggyBank, TrendingUp, Sparkles } from 'lucide-react';
 
 function Dashboard() {
-  const { 
-    user, 
-    currentVehicle, 
+  const {
+    user,
+    loading,
+    currentVehicle,
     getGreeting,
-    isMonday 
+    isMonday
   } = useApp();
+
+  // Show loading state while user data is being fetched
+  if (loading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🏎️</div>
+          <p className="text-dark-400">Laden...</p>
+        </div>
+      </div>
+    );
+  }
 
   const currentMission = getMissionByWeek(user.currentWeek);
 

@@ -13,7 +13,9 @@
       "Bash(node push-schema.js:*)",
       "Bash(node confirm-push.js:*)",
       "Bash(grep:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(Get-Content D:OpnaareenmiljoensrcpagesDashboard.jsx)",
+      "Bash(git remote add:*)"
     ]
   }
 }

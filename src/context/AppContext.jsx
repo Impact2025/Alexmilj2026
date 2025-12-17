@@ -388,6 +388,7 @@ export function AppProvider({ children }) {
   const value = {
     // User state
     user,
+    dbUser,
     loading,
     isSignedIn,
     clerkUser,

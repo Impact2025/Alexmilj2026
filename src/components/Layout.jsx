@@ -1,7 +1,8 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Home, Target, Map, Video, Settings, Flame, Zap } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Home, Target, Map, Video, Settings, Flame, Zap, Shield } from 'lucide-react';
 import AuthButton from './AuthButton';
 import SyncIndicator from './SyncIndicator';
 
@@ -14,16 +15,18 @@ const AnimatedBackground = () => (
   </div>
 );
 
-// Navigation items
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: Home },
-  { to: '/missies', label: 'Missies', icon: Target },
-  { to: '/reis', label: 'De Reis', icon: Map },
-  { to: '/zondag', label: 'Zondag', icon: Video },
-];
-
 function Layout() {
   const { user, getGreeting, getDayName } = useApp();
+  const { isAdmin } = useAuth();
+
+  // Navigation items (conditionally add Admin for admins)
+  const navItems = [
+    { to: '/', label: 'Dashboard', icon: Home },
+    { to: '/missies', label: 'Missies', icon: Target },
+    { to: '/reis', label: 'De Reis', icon: Map },
+    { to: '/zondag', label: 'Zondag', icon: Video },
+    ...(isAdmin() ? [{ to: '/admin', label: 'Admin', icon: Shield }] : []),
+  ];
 
   return (
     <div className="min-h-screen bg-dark-950 text-white">

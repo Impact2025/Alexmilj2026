@@ -6,6 +6,7 @@ import Missions from './pages/Missions';
 import Journey from './pages/Journey';
 import SundayReview from './pages/SundayReview';
 import Settings from './pages/Settings';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="reis" element={<Journey />} />
         <Route path="zondag" element={<SundayReview />} />
         <Route path="instellingen" element={<Settings />} />
+        <Route path="admin" element={<AdminDashboard />} />
       </Route>
     </Routes>
   );

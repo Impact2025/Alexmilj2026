@@ -57,6 +57,11 @@ export const sundayReviews = pgTable('sunday_reviews', {
   videoUrl: varchar('video_url', { length: 500 }),
   notes: text('notes'),
   xpEarned: integer('xp_earned').notNull().default(75),
+  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
+  // Admin feedback
+  adminFeedback: text('admin_feedback'),
+  adminRating: integer('admin_rating'), // 1-5 stars
+  reviewedAt: timestamp('reviewed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
