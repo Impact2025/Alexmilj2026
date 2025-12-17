@@ -9,9 +9,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_CLERK_PUBLISHABLE_KEY": "@vite_clerk_publishable_key",
-    "VITE_DATABASE_URL": "@vite_database_url"
-  }
+  ]
 }
