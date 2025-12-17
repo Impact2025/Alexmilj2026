@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(git init:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n🚀 Initial commit: Wereldklasse app met Neon Database & Clerk Auth\n\n✨ Nieuwe Features:\n- Neon Postgres database integratie\n- Clerk authenticatie met social logins\n- Hybrid storage (cloud + local fallback)\n- Real-time sync tussen devices\n- Database services layer (userService, missionService)\n- Type-safe queries met Drizzle ORM\n- Deployment configuratie voor Vercel\n\n🏗️ Architectuur:\n- React 18 + Vite + Tailwind CSS\n- Serverless Postgres (Neon)\n- Authentication (Clerk)\n- ORM (Drizzle)\n- Service layer pattern\n\n📊 Database Schema:\n- users (XP, streaks, geld tracking)\n- completed_missions (voortgang)\n- badges (prestaties)\n- daily_logs (dagelijkse tracking)\n- sunday_reviews (video''s)\n- weekly_goals (doelen)\n\n📚 Documentatie:\n- SETUP.md voor complete setup instructies\n- README.md met architectuur en deployment info\n- vercel.json voor deployment\n\n🔒 Security:\n- Environment variables voor gevoelige data\n- .gitignore voor .env files\n- Clerk voor veilige authenticatie\n\n🎯 Next Steps:\n- Configureer .env.local met database/auth credentials\n- Run npm run db:push om schema te deployen\n- Deploy naar Vercel voor productie\n\n🏎️ Gemaakt met liefde door Papa & Zoon\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")"
+    ]
+  }
+}
