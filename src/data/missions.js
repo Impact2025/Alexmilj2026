@@ -394,18 +394,384 @@ export const MISSIONS = [
     tips: "Je bent halverwege! Dat is ENORM!"
   },
 
-  // Q3 en Q4 kunnen later worden toegevoegd...
-  // Placeholder voor nu
-  ...Array.from({ length: 26 }, (_, i) => ({
-    week: 27 + i,
-    title: `Week ${27 + i} Missie`,
-    category: i % 4 === 0 ? "mindset" : i % 4 === 1 ? "geld" : i % 4 === 2 ? "skills" : "actie",
-    description: "Komt binnenkort!",
-    steps: ["Wordt nog ingevuld"],
-    xpReward: 100 + (i * 5),
-    skill: "Wordt bepaald",
-    tips: "Volgende kwartalen worden toegevoegd"
-  }))
+  // Q3: ONDERNEMEN (Week 28-39)
+  {
+    week: 28,
+    title: "Mijn Eerste Product",
+    category: "actie",
+    description: "Verzin een product dat je zelf kunt maken en verkopen",
+    steps: [
+      "Bedenk 3 dingen die je kunt maken (snoep, sleutelhanger, tekening)",
+      "Kies er één uit en maak er een prototype van",
+      "Bepaal een prijs",
+      "Laat je product zien in de video"
+    ],
+    xpReward: 150,
+    skill: "Ondernemen",
+    tips: "Begin klein. Eén verkocht product is een echte ondernemer."
+  },
+  {
+    week: 29,
+    title: "Klanten Vinden",
+    category: "actie",
+    description: "Leer hoe je mensen vindt die jouw product willen",
+    steps: [
+      "Schrijf op wie jouw product zou kopen",
+      "Bedek 3 manieren om die mensen te bereiken",
+      "Vraag aan 3 mensen of ze het leuk vinden",
+      "Vertel in de video wat je leerde"
+    ],
+    xpReward: 150,
+    skill: "Verkoop",
+    tips: "De beste klant is iemand die een probleem van je oplost."
+  },
+  {
+    week: 30,
+    title: "Mijn Merk Bedenken",
+    category: "skills",
+    description: "Geef je onderneming een naam en een look",
+    steps: [
+      "Verzin een catchy naam voor je merk",
+      "Kies 2 kleuren die bij je merk passen",
+      "Teken een simpel logo",
+      "Laat je merk zien in de video"
+    ],
+    xpReward: 150,
+    skill: "Branding",
+    tips: "Een sterk merk maakt mensen blij als ze het zien."
+  },
+  {
+    week: 31,
+    title: "De Kracht van Herhaling",
+    category: "mindset",
+    description: "Ontdek hoe kleine stappen elke dag groot worden",
+    steps: [
+      "Kies één vaardigheid om 10 min per dag te oefenen",
+      "Doe dat 7 dagen achter elkaar",
+      "Schrijf op wat er veranderde",
+      "Deel je inzicht in de video"
+    ],
+    xpReward: 150,
+    skill: "Discipline",
+    tips: "Als je iets 66 dagen doet, wordt het een gewoonte."
+  },
+  {
+    week: 32,
+    title: "Investeren Begrijpen",
+    category: "geld",
+    description: "Leer wat investeren is en waarom het werkt",
+    steps: [
+      "Zoek uit wat 'rente' betekent",
+      "Reken uit: €100 wordt €110 na 1 jaar bij 10%",
+      "Bedenk waarom wachten loont",
+      "Leg het uit in de video"
+    ],
+    xpReward: 160,
+    skill: "Beleggen",
+    tips: "Tijd is de grootste vriend van je geld."
+  },
+  {
+    week: 33,
+    title: "Mijn Verkooppraatje",
+    category: "skills",
+    description: "Oefen hoe je enthousiast over je product praat",
+    steps: [
+      "Schrijf 3 zinnen waarom jouw product leuk is",
+      "Oefen hardop voor de spiegel",
+      "Houd je praatje in de video",
+      "Vraag papa wat beter kan"
+    ],
+    xpReward: 150,
+    skill: "Pitch",
+    tips: "Geloof je er zelf in, dan gelooft de koper het ook."
+  },
+  {
+    week: 34,
+    title: "Samenwerken",
+    category: "actie",
+    description: "Werk samen met iemand aan een project",
+    steps: [
+      "Vraag een vriend of familielid mee te doen",
+      "Verdeel 2 taken",
+      "Maak samen iets af",
+      "Vertel in de video hoe samenwerken voelde"
+    ],
+    xpReward: 160,
+    skill: "Teamwork",
+    tips: "Twee breinen verzinnen meer dan één."
+  },
+  {
+    week: 35,
+    title: "Mijn Geld-dagboek",
+    category: "geld",
+    description: "Houd een week lang bij waar je geld naartoe gaat",
+    steps: [
+      "Schrijf 7 dagen op wat je uitgeeft",
+      "Tel op wat er weg was aan snoep",
+      "Bedenk 1 ding om te minderen",
+      "Deel je inzicht in de video"
+    ],
+    xpReward: 150,
+    skill: "Inzicht",
+    tips: "Weten waar geld naartoe gaat is de eerste stap naar rijkdom."
+  },
+  {
+    week: 36,
+    title: "Een Fail Flikken",
+    category: "mindset",
+    description: "Doe expres iets wat mislukt en leer ervan",
+    steps: [
+      "Kies iets waarvan je denkt dat het mislukt",
+      "Probeer het toch",
+      "Schrijf op wat je leerde",
+      "Lach erom in de video"
+    ],
+    xpReward: 160,
+    skill: "Veerkracht",
+    tips: "Elke uitvinder is honderd keer mislukt. Falen = leren."
+  },
+  {
+    week: 37,
+    title: "Mijn Website Bouwen",
+    category: "skills",
+    description: "Maak een simpele pagina over je merk",
+    steps: [
+      "Kies een tool (Canva, Google Sites, of vraag papa)",
+      "Zet je logo en 1 product erop",
+      "Voeg een 'koop hier' knop toe",
+      "Laat je site zien in de video"
+    ],
+    xpReward: 170,
+    skill: "Bouwen",
+    tips: "Een website is je winkel die nooit slaapt."
+  },
+  {
+    week: 38,
+    title: "Diensten Verkopen",
+    category: "actie",
+    description: "Verkoop een hulp-dienst in plaats van een product",
+    steps: [
+      "Bedenk 3 diensten (gruntwerk, hond uitlaten, tuin)",
+      "Kies er één",
+      "Bied hem aan aan 2 buren",
+      "Vertel in de video hoe het ging"
+    ],
+    xpReward: 170,
+    skill: "Service",
+    tips: "Een dienst kost geen inkoop — pure winst."
+  },
+  {
+    week: 39,
+    title: "Kwartaal 3 Terugblik",
+    category: "review",
+    description: "Kijk terug op alles wat je dit kwartaal deed",
+    steps: [
+      "Tel je totale XP van dit kwartaal",
+      "Kies je favoriete missie",
+      "Bedenk waar je trots op bent",
+      "Maak een epische terugblik-video!"
+    ],
+    xpReward: 200,
+    skill: "Reflectie",
+    tips: "Drie kwartalen gedaan. Jij bent een machine."
+  },
+
+  // Q4: SCHAALEN & VIEREN (Week 40-52)
+  {
+    week: 40,
+    title: "Mijn Prijs Strategie",
+    category: "geld",
+    description: "Leer dat prijs invloed heeft op wie koopt",
+    steps: [
+      "Zet je product op 3 prijzen naast elkaar",
+      "Bedenk bij welke prijs jij het meeste verdient",
+      "Vraag 5 mensen welke ze kiezen",
+      "Leg je keuze uit in de video"
+    ],
+    xpReward: 170,
+    skill: "Pricing",
+    tips: "Te goedkoop = mensen denken dat het waardeloos is."
+  },
+  {
+    week: 41,
+    title: "Een Tweede Inkomen",
+    category: "actie",
+    description: "Zorg dat je geld verdient terwijl je slaapt",
+    steps: [
+      "Zet iets te koop dat automatisch loopt",
+      "Of: leen geld uit aan je spaarpot met rente",
+      "Check na een week wat er binnenkwam",
+      "Deel het in de video"
+    ],
+    xpReward: 180,
+    skill: "Passief",
+    tips: "Rijke mensen hebben geld dat voor ze werkt."
+  },
+  {
+    week: 42,
+    title: "Geven aan Anderen",
+    category: "mindset",
+    description: "Ontdek de kracht van weggeven",
+    steps: [
+      "Kies iets wat je kunt missen",
+      "Geef het aan iemand die het nodig heeft",
+      "Kijk hoe het voelt",
+      "Vertel in de video waarom geven rijk maakt"
+    ],
+    xpReward: 170,
+    skill: "Generosity",
+    tips: "De hand die geeft, wordt altijd terug gevuld."
+  },
+  {
+    week: 43,
+    title: "Mijn Grote Doel",
+    category: "mindset",
+    description: "Stel een doel voor het komende jaar",
+    steps: [
+      "Schrijf 1 enorm doel op",
+      "Maak 3 kleine stappen er naartoe",
+      "Hang het naast je vision board",
+      "Vertel het in de video"
+    ],
+    xpReward: 180,
+    skill: "Doelen",
+    tips: "Een doel zonder datum is een wens. Geef het een datum."
+  },
+  {
+    week: 44,
+    title: "Negotiëren",
+    category: "skills",
+    description: "Leer onderhandelen over prijs en afspraken",
+    steps: [
+      "Bedenk iets waar je om kunt vragen",
+      "Oefen 'Nee, maar dan wel...'",
+      "Onderhandel met papa over iets kleins",
+      "Laat je truc zien in de video"
+    ],
+    xpReward: 180,
+    skill: "Negotiation",
+    tips: "Alles is bespreekbaar. Je moet het alleen vragen."
+  },
+  {
+    week: 45,
+    title: "Mijn Klantenlijst",
+    category: "actie",
+    description: "Bouw een lijst met mensen die bij je kopen",
+    steps: [
+      "Schrijf de namen op van wie al kocht",
+      "Vraag ze om nog een keer te kopen",
+      "Bied iets specsiaals aan",
+      "Deel je lijst in de video"
+    ],
+    xpReward: 180,
+    skill: "CRM",
+    tips: "Een trouwe klant is 10x meer waard dan 1 nieuwe."
+  },
+  {
+    week: 46,
+    title: "Schaal het Op",
+    category: "geld",
+    description: "Bedek hoe je meer verkoopt zonder meer werk",
+    steps: [
+      "Kies 1 product om in bulk te maken",
+      "Maak er 5 tegelijk",
+      "Verkoop ze aan verschillende mensen",
+      "Vertel in de video wat er gebeurde"
+    ],
+    xpReward: 190,
+    skill: "Scalability",
+    tips: "Doen wat werkt, maar dan 10x — dat is schalen."
+  },
+  {
+    week: 47,
+    title: "Mijn Verhaal",
+    category: "skills",
+    description: "Vertel wie je bent en waar je voor staat",
+    steps: [
+      "Schrijf 3 zinnen over jezelf",
+      "Waarom doe je dit avontuur?",
+      "Oefen je verhaal",
+      "Houd het in de video"
+    ],
+    xpReward: 180,
+    skill: "Storytelling",
+    tips: "Mensen kopen van mensen die ze kennen en vertrouwen."
+  },
+  {
+    week: 48,
+    title: "Gewoontes van Rijken",
+    category: "mindset",
+    description: "Leer 3 gewoontes van succesvolle mensen",
+    steps: [
+      "Zoek 3 gewoontes (vroeg op, lezen, sport)",
+      "Kies er één om 1 week te doen",
+      "Schrijf op wat het bracht",
+      "Deel het in de video"
+    ],
+    xpReward: 190,
+    skill: "Habits",
+    tips: "Je wordt wie je elke dag bent."
+  },
+  {
+    week: 49,
+    title: "Mijn Meesterplan",
+    category: "actie",
+    description: "Maak een plan voor de laatste sprint",
+    steps: [
+      "Kies 3 dingen die je nog wil afmaken",
+      "Zet ze op een tijdlijn",
+      "Begin vandaag met de eerste",
+      "Laat je plan zien in de video"
+    ],
+    xpReward: 190,
+    skill: "Planning",
+    tips: "Een plan op papier is een droom met een deadline."
+  },
+  {
+    week: 50,
+    title: "De Lamborghini Check",
+    category: "review",
+    description: "Check hoe dicht je bij de Lambo bent",
+    steps: [
+      "Tel je totale XP",
+      "Zie welk voertuig je nu hebt",
+      "Bedenk de laatste stappen naar de Lambo",
+      "Maak een video van je reis tot nu toe"
+    ],
+    xpReward: 200,
+    skill: "Reflectie",
+    tips: "Je bent niet meer de skateboarder van week 1."
+  },
+  {
+    week: 51,
+    title: "Celebrate & Share",
+    category: "mindset",
+    description: "Vier wat je bereikt hebt en deel het",
+    steps: [
+      "Kies 1 ding waar je het trotst op bent",
+      "Deel je verhaal met iemand",
+      "Trakteer jezelf op iets kleins",
+      "Vier het in de video"
+    ],
+    xpReward: 190,
+    skill: "Pride",
+    tips: "Vieren is belangrijk. Je hebt keihard gewerkt."
+  },
+  {
+    week: 52,
+    title: "Het Eerste Miljoen Mindset",
+    category: "review",
+    description: "Sluit het jaar af als echte miljonair in de maak",
+    steps: [
+      "Schrijf op wat je nu anders doet dan in week 1",
+      "Stel je doel voor volgend jaar",
+      "Bedank papa in de video",
+      "Maak je allerbeste eindvideo!"
+    ],
+    xpReward: 250,
+    skill: "Mastery",
+    tips: "Een miljoen begin niet met geld. Het begint met wie je bent geworden."
+  }
 ];
 
 // Get mission by week

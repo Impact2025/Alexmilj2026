@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { Navigate } from 'react-router-dom';
 import * as adminService from '../services/adminService';
+import { useToast } from '../context/ToastContext';
 import {
   BarChart3,
   Activity,
@@ -16,12 +17,17 @@ import {
   Target,
   Calendar,
   CheckCircle,
-  Clock
+  Clock,
+  BookOpen,
+  MessageSquare,
+  Edit2
 } from 'lucide-react';
+import { EditableAnswer } from '../components/EditableAnswer';
 
 function AdminDashboard() {
   const { isAdmin } = useAuth();
   const { user, loading } = useApp();
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState('overview');
 
   // Redirect if not admin
@@ -43,6 +49,7 @@ function AdminDashboard() {
   const tabs = [
     { id: 'overview', label: 'Overzicht', icon: BarChart3 },
     { id: 'activity', label: 'Activiteit', icon: Activity },
+    { id: 'answers', label: 'Antwoorden', icon: BookOpen },
     { id: 'reviews', label: 'Reviews', icon: Video },
     { id: 'missions', label: 'Missies', icon: PlusCircle },
   ];
@@ -80,6 +87,7 @@ function AdminDashboard() {
       <div>
         {activeTab === 'overview' && <OverviewTab user={user} />}
         {activeTab === 'activity' && <ActivityTab user={user} />}
+        {activeTab === 'answers' && <AnswersTab user={user} />}
         {activeTab === 'reviews' && <ReviewsTab user={user} />}
         {activeTab === 'missions' && <MissionsTab user={user} />}
       </div>
@@ -267,6 +275,280 @@ function ActivityTab({ user }) {
           ))
         )}
       </div>
+    </div>
+  );
+}
+
+// Answers Tab
+function AnswersTab({ user }) {
+  const [answers, setAnswers] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all'); // 'all', 'completed', 'inProgress'
+  const [editingAnswer, setEditingAnswer] = useState(null); // { weekNumber, stepIndex } or null
+  const { dbUser, syncMode, loadAllAnswers, isMissionCompleted, adminSaveStepAnswer } = useApp();
+  const { MISSIONS } = require('../data/missions');
+
+  useEffect(() => {
+    const loadAnswersData = async () => {
+      const result = await loadAllAnswers();
+      if (result.success) {
+        setAnswers(result.data);
+      }
+      setLoading(false);
+    };
+
+    loadAnswersData();
+  }, []);
+
+  const getMissionsWithAnswers = () => {
+    const weekNumbers = Object.keys(answers).map(Number).sort((a, b) => a - b);
+
+    return weekNumbers.map(weekNumber => {
+      const mission = MISSIONS.find(m => m.week === weekNumber);
+      const weekAnswers = answers[weekNumber] || {};
+      const isCompleted = isMissionCompleted(weekNumber);
+
+      // Convert answers object to array
+      const answersArray = Object.keys(weekAnswers)
+        .filter(stepIndex => weekAnswers[stepIndex]?.trim().length > 0)
+        .map(stepIndex => ({
+          stepIndex: parseInt(stepIndex),
+          stepText: mission?.steps[stepIndex] || `Stap ${parseInt(stepIndex) + 1}`,
+          answer: weekAnswers[stepIndex]
+        }))
+        .sort((a, b) => a.stepIndex - b.stepIndex);
+
+      return {
+        weekNumber,
+        mission,
+        answers: answersArray,
+        isCompleted,
+        hasAnswers: answersArray.length > 0,
+        progress: mission ? Math.round((answersArray.length / mission.steps.length) * 100) : 0
+      };
+    }).filter(item => item.hasAnswers);
+  };
+
+  const getFilteredMissions = () => {
+    let missions = getMissionsWithAnswers();
+
+    if (filter === 'completed') {
+      missions = missions.filter(m => m.isCompleted);
+    } else if (filter === 'inProgress') {
+      missions = missions.filter(m => !m.isCompleted);
+    }
+
+    return missions;
+  };
+
+  const filteredMissions = getFilteredMissions();
+  const allMissions = getMissionsWithAnswers();
+
+  if (loading) {
+    return (
+      <div className="glass-card p-6">
+        <p className="text-dark-400 text-center py-8">Laden...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-blue-500/20">
+              <MessageSquare className="w-5 h-5 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-xs text-dark-400">Totaal Antwoorden</p>
+              <p className="text-xl font-bold text-white">
+                {allMissions.reduce((sum, m) => sum + m.answers.length, 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-emerald-500/20">
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-xs text-dark-400">Voltooide Missies</p>
+              <p className="text-xl font-bold text-white">
+                {allMissions.filter(m => m.isCompleted).length}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-amber-500/20">
+              <Clock className="w-5 h-5 text-amber-400" />
+            </div>
+            <div>
+              <p className="text-xs text-dark-400">In Behandeling</p>
+              <p className="text-xl font-bold text-white">
+                {allMissions.filter(m => !m.isCompleted).length}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Buttons */}
+      <div className="glass-card p-4">
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              filter === 'all'
+                ? 'bg-amber-500 text-white'
+                : 'bg-dark-800 text-dark-400 hover:bg-dark-700'
+            }`}
+          >
+            Alles ({allMissions.length})
+          </button>
+          <button
+            onClick={() => setFilter('completed')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              filter === 'completed'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-dark-800 text-dark-400 hover:bg-dark-700'
+            }`}
+          >
+            Voltooid ({allMissions.filter(m => m.isCompleted).length})
+          </button>
+          <button
+            onClick={() => setFilter('inProgress')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              filter === 'inProgress'
+                ? 'bg-amber-500 text-white'
+                : 'bg-dark-800 text-dark-400 hover:bg-dark-700'
+            }`}
+          >
+            Bezig ({allMissions.filter(m => !m.isCompleted).length})
+          </button>
+        </div>
+      </div>
+
+      {/* Answers List */}
+      {filteredMissions.length === 0 ? (
+        <div className="glass-card p-8 text-center">
+          <BookOpen className="w-16 h-16 text-dark-600 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-white mb-2">Nog geen antwoorden</h3>
+          <p className="text-dark-400">
+            Je zoon heeft nog geen antwoorden ingevuld voor de missies
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredMissions.map(({ weekNumber, mission, answers, isCompleted, progress }) => (
+            <div key={weekNumber} className="glass-card overflow-hidden">
+              {/* Mission Header */}
+              <div className={`p-4 border-l-4 ${
+                isCompleted ? 'border-l-emerald-500 bg-emerald-500/5' : 'border-l-amber-500 bg-amber-500/5'
+              }`}>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-dark-800 text-dark-400">
+                        Week {weekNumber}
+                      </span>
+                      {isCompleted && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Voltooid
+                        </span>
+                      )}
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300">
+                        {answers.length} / {mission?.steps.length || 0} stappen
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-white">{mission?.title || `Week ${weekNumber}`}</h3>
+                    {mission?.description && (
+                      <p className="text-sm text-dark-400 mt-1">{mission.description}</p>
+                    )}
+
+                    {/* Progress Bar */}
+                    <div className="mt-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-dark-500">Voortgang</span>
+                        <span className="text-xs font-bold text-amber-400">{progress}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-dark-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <Calendar className="w-5 h-5 text-dark-500 ml-4" />
+                </div>
+              </div>
+
+              {/* Answers */}
+              <div className="p-4 space-y-4">
+                {answers.map(({ stepIndex, stepText, answer }) => (
+                  <div key={stepIndex} className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <div className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                        {stepIndex + 1}
+                      </div>
+                      <p className="text-sm text-dark-400 font-medium">{stepText}</p>
+                    </div>
+                    {editingAnswer?.weekNumber === weekNumber && editingAnswer?.stepIndex === stepIndex ? (
+                      <div className="ml-7">
+                        <EditableAnswer
+                          weekNumber={weekNumber}
+                          stepIndex={stepIndex}
+                          stepText={null}
+                          initialValue={answer}
+                          onSave={async (newAnswer) => {
+                            if (syncMode !== 'cloud' || !dbUser) {
+                              toast.error('Admin editing alleen beschikbaar in cloud mode');
+                              return;
+                            }
+                            await adminSaveStepAnswer(dbUser.id, weekNumber, stepIndex, newAnswer);
+                            setEditingAnswer(null);
+                            // Refresh answers
+                            const result = await loadAllAnswers();
+                            if (result.success) {
+                              setAnswers(result.data);
+                            }
+                          }}
+                          mode="manual"
+                          onCancel={() => setEditingAnswer(null)}
+                          userId={dbUser?.id}
+                        />
+                      </div>
+                    ) : (
+                      <div className="ml-7 p-3 bg-dark-800/50 rounded-lg border border-dark-700/50">
+                        <p className="text-dark-200 text-sm whitespace-pre-wrap">{answer}</p>
+                        <div className="mt-2 flex items-center justify-between">
+                          <span className="text-xs text-dark-500">
+                            {answer.length} karakters
+                          </span>
+                          {syncMode === 'cloud' && (
+                            <button
+                              onClick={() => setEditingAnswer({ weekNumber, stepIndex })}
+                              className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 transition-colors"
+                            >
+                              <Edit2 className="w-3 h-3" /> Bewerken
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

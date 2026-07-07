@@ -1,7 +1,7 @@
 {
   "name": "reis-naar-het-miljoen",
-  "version": "1.0.0",
-  "description": "Een vader-zoon avontuur naar het eerste miljoen",
+  "version": "3.0.0",
+  "description": "Een vader-zoon avontuur naar het eerste miljoen — wereldklasse editie met serverless API + veilige auth",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,13 +14,12 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.59.0",
     "@neondatabase/serverless": "^1.0.2",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
-    "firebase": "^10.7.0",
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",

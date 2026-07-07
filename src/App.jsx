@@ -7,6 +7,7 @@ import Journey from './pages/Journey';
 import SundayReview from './pages/SundayReview';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
+import Diary from './pages/Diary';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="missies" element={<Missions />} />
+        <Route path="dagboek" element={<Diary />} />
         <Route path="reis" element={<Journey />} />
         <Route path="zondag" element={<SundayReview />} />
         <Route path="instellingen" element={<Settings />} />

@@ -1,58 +1,55 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { api } from '../lib/api';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [role, setRole] = useState(null); // 'admin' or 'user'
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check session storage on mount
+  // Restore session from stored token on mount (token is server-signed + validated).
   useEffect(() => {
-    const savedAuth = sessionStorage.getItem('auth-role');
-    if (savedAuth) {
-      setRole(savedAuth);
-      setIsAuthenticated(true);
+    const token = localStorage.getItem('auth-token');
+    const storedRole = localStorage.getItem('auth-role');
+    if (token && storedRole) {
+      // Verify the token is still valid server-side.
+      api.getMe().then((res) => {
+        if (res.success) {
+          setRole(storedRole);
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem('auth-token');
+          localStorage.removeItem('auth-role');
+        }
+        setLoading(false);
+      }).catch(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const authenticate = (userRole) => {
+  const authenticate = useCallback((userRole) => {
     setRole(userRole);
     setIsAuthenticated(true);
-    sessionStorage.setItem('auth-role', userRole);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('auth-role');
     setRole(null);
     setIsAuthenticated(false);
-    sessionStorage.removeItem('auth-role');
-  };
+  }, []);
 
-  const isAdmin = () => role === 'admin';
-  const isUser = () => role === 'user';
+  const isAdmin = useCallback(() => role === 'admin', [role]);
+  const isUser = useCallback(() => role === 'user', [role]);
 
-  const value = {
-    isAuthenticated,
-    role,
-    loading,
-    authenticate,
-    logout,
-    isAdmin,
-    isUser,
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = { isAuthenticated, role, loading, authenticate, logout, isAdmin, isUser };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }

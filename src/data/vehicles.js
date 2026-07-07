@@ -1,4 +1,6 @@
-// Vehicle progression system
+// Vehicle progression system — tuned so the Lamborghini is reachable in ~1 year
+// of weekly play (52 missions avg ~150 XP + 52 rituals * 25 XP + 52 videos * 75 XP
+// ≈ 13k XP). Curve peaks at 8000 XP, not 100000.
 export const VEHICLES = [
   { 
     id: 1, 
@@ -12,7 +14,7 @@ export const VEHICLES = [
     id: 2, 
     name: 'BMX', 
     emoji: '🚲', 
-    xpRequired: 500,
+    xpRequired: 300,
     description: 'Je komt vooruit!',
     color: 'from-blue-500 to-blue-600'
   },
@@ -20,31 +22,39 @@ export const VEHICLES = [
     id: 3, 
     name: 'Scooter', 
     emoji: '🛵', 
-    xpRequired: 1500,
+    xpRequired: 800,
     description: 'Je gaat harder!',
     color: 'from-green-500 to-green-600'
   },
   { 
     id: 4, 
+    name: 'E-step', 
+    emoji: '🛴', 
+    xpRequired: 1600,
+    description: 'Slim en snel onderweg',
+    color: 'from-cyan-500 to-cyan-600'
+  },
+  { 
+    id: 5, 
     name: 'Tesla', 
     emoji: '🚗', 
-    xpRequired: 5000,
+    xpRequired: 3000,
     description: 'Slim en elektrisch',
     color: 'from-red-500 to-red-600'
   },
   { 
-    id: 5, 
+    id: 6, 
     name: 'Porsche', 
     emoji: '🏎️', 
-    xpRequired: 15000,
+    xpRequired: 5000,
     description: 'Bijna daar...',
     color: 'from-yellow-500 to-yellow-600'
   },
   { 
-    id: 6, 
+    id: 7, 
     name: 'Lamborghini', 
     emoji: '🏎️', 
-    xpRequired: 100000,
+    xpRequired: 8000,
     description: 'JE HEBT HET GEHAALD!',
     color: 'from-amber-500 to-orange-500'
   },

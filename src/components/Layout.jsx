@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
-import { Home, Target, Map, Video, Settings, Flame, Zap, Shield } from 'lucide-react';
+import { Home, Target, Map, Video, Settings, Flame, Zap, Shield, BookOpen } from 'lucide-react';
 import AuthButton from './AuthButton';
 import SyncIndicator from './SyncIndicator';
 
@@ -23,6 +23,7 @@ function Layout() {
   const navItems = [
     { to: '/', label: 'Dashboard', icon: Home },
     { to: '/missies', label: 'Missies', icon: Target },
+    { to: '/dagboek', label: 'Dagboek', icon: BookOpen },
     { to: '/reis', label: 'De Reis', icon: Map },
     { to: '/zondag', label: 'Zondag', icon: Video },
     ...(isAdmin() ? [{ to: '/admin', label: 'Admin', icon: Shield }] : []),

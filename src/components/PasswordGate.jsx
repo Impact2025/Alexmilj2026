@@ -1,64 +1,80 @@
 import React, { useState } from 'react';
 import { Lock, User, Shield } from 'lucide-react';
+import { api } from '../lib/api';
 
-// Wachtwoorden (in productie deze in environment variables zetten!)
-const PASSWORDS = {
-  admin: 'papa2024',  // Papa's admin wachtwoord
-  user: 'zoon2024'    // Zoon's wachtwoord
-};
-
+// Login gate. Passwords are verified SERVER-SIDE (/api/auth). No credentials
+// live in the client. On success we store the signed token and call onAuthenticate.
 export default function PasswordGate({ onAuthenticate }) {
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // Check wachtwoord
-    setTimeout(() => {
-      if (password === PASSWORDS.admin) {
-        onAuthenticate('admin');
-      } else if (password === PASSWORDS.user) {
-        onAuthenticate('user');
-      } else {
-        setError('Onjuist wachtwoord!');
-        setPassword('');
-        setLoading(false);
-      }
-    }, 500);
+    const res = await api.login(role, password);
+    if (res.success && res.token) {
+      localStorage.setItem('auth-token', res.token);
+      localStorage.setItem('auth-role', res.role);
+      onAuthenticate(res.role);
+    } else {
+      setError(res.error || 'Onjuist wachtwoord!');
+      setPassword('');
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4">
-      {/* Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="blob top-0 left-1/4 w-96 h-96 bg-amber-500/10" />
         <div className="blob bottom-0 right-1/4 w-80 h-80 bg-blue-500/10" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* Login Card */}
       <div className="relative z-10 w-full max-w-md">
         <div className="glass-card p-8 md:p-10">
-          {/* Logo */}
           <div className="text-center mb-8">
             <div className="text-6xl mb-4 vehicle-bounce">🏎️</div>
             <h1 className="text-3xl font-black bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
               REIS NAAR HET MILJOEN
             </h1>
-            <p className="text-dark-400 text-sm">
-              Voer je wachtwoord in om verder te gaan
-            </p>
+            <p className="text-dark-400 text-sm">Voer je wachtwoord in om verder te gaan</p>
           </div>
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-2">
-                Wachtwoord
-              </label>
+              <label className="block text-sm font-medium text-dark-300 mb-2">Wie ben je?</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRole('user')}
+                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+                    role === 'user'
+                      ? 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+                      : 'border-dark-700 text-dark-400 hover:bg-dark-800/50'
+                  }`}
+                >
+                  <User className="w-4 h-4" /> Zoon
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+                    role === 'admin'
+                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                      : 'border-dark-700 text-dark-400 hover:bg-dark-800/50'
+                  }`}
+                >
+                  <Shield className="w-4 h-4" /> Papa
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-dark-300 mb-2">Wachtwoord</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-500" />
                 <input
@@ -71,11 +87,7 @@ export default function PasswordGate({ onAuthenticate }) {
                   disabled={loading}
                 />
               </div>
-              {error && (
-                <p className="mt-2 text-sm text-red-400">
-                  {error}
-                </p>
-              )}
+              {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
             </div>
 
             <button
@@ -87,7 +99,6 @@ export default function PasswordGate({ onAuthenticate }) {
             </button>
           </form>
 
-          {/* Hints */}
           <div className="mt-8 space-y-3">
             <div className="flex items-start gap-3 p-3 bg-dark-800/50 rounded-lg">
               <User className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />

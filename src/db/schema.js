@@ -75,3 +75,19 @@ export const weeklyGoals = pgTable('weekly_goals', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// Mission answers - children's answers to mission step questions
+export const missionAnswers = pgTable('mission_answers', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  weekNumber: integer('week_number').notNull(),
+  stepIndex: integer('step_index').notNull(), // 0-based index
+  answer: text('answer').notNull(), // Max 500 characters (validated in app)
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  // Unique constraint: one answer per user per step
+  uniqueUserWeekStep: unique('unique_user_week_step').on(table.userId, table.weekNumber, table.stepIndex),
+  // Index for fast queries by user and week
+  userWeekIdx: index('user_week_idx').on(table.userId, table.weekNumber),
+}));

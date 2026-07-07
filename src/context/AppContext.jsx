@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import { getCurrentVehicle, getNextVehicle, getProgressToNext } from '../data/vehicles';
 import { getQuoteOfTheDay } from '../data/quotes';
 import * as userService from '../services/userService';
 import * as missionService from '../services/missionService';
+import * as answerService from '../services/answerService';
 import { useToast } from './ToastContext';
+import { useAuth } from './AuthContext';
 import { validateName, validateXP, validateMoney } from '../utils/validation';
 
 const AppContext = createContext();
@@ -34,68 +35,31 @@ export const XP_REWARDS = {
 
 export function AppProvider({ children }) {
   const toast = useToast();
-
-  // Try to use Clerk, but handle if it's not available
-  let isSignedIn = false;
-  let clerkUser = null;
-  let isLoaded = true;
-
-  try {
-    const clerkData = useUser();
-    isSignedIn = clerkData.isSignedIn || false;
-    clerkUser = clerkData.user;
-    isLoaded = clerkData.isLoaded;
-  } catch (error) {
-    // Clerk not available, use local mode
-    console.log('Clerk not configured, running in local-only mode');
-  }
+  const { isAuthenticated, role } = useAuth();
 
   const [user, setUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [syncMode, setSyncMode] = useState('local'); // 'auto', 'local', 'cloud'
+  const [syncMode, setSyncMode] = useState('local'); // 'cloud' | 'local'
+  const [missionAnswers, setMissionAnswers] = useState({}); // { [weekNumber]: { [stepIndex]: answer } }
 
-  // Load user data from localStorage or database
+  // Load user data: cloud (server API, when authenticated) or local (guest/offline).
   useEffect(() => {
     const loadUserData = async () => {
-      if (!isLoaded) return;
-
       try {
-        if (isSignedIn && clerkUser) {
-          // User is signed in - try to load from database
-          const result = await userService.getUserByAuthId(clerkUser.id);
-
+        if (isAuthenticated && role) {
+          // Authenticated: load the user profile from the server (token already validated).
+          const result = await userService.getUserByAuthId();
           if (result.success && result.data) {
-            // User exists in database
             setDbUser(result.data);
-            setUser({
-              ...result.data,
-              completedMissions: [], // Will be loaded separately
-            });
+            setUser({ ...result.data, completedMissions: result.data.completedMissions || [] });
             setSyncMode('cloud');
           } else {
-            // New user - create in database
-            const createResult = await userService.createUser({
-              name: clerkUser.firstName || 'Champion',
-              email: clerkUser.primaryEmailAddress?.emailAddress,
-              authId: clerkUser.id,
-            });
-
-            if (createResult.success) {
-              setDbUser(createResult.data);
-              setUser({
-                ...createResult.data,
-                completedMissions: [],
-              });
-              setSyncMode('cloud');
-            } else {
-              // Fallback to localStorage
-              loadFromLocalStorage();
-              setSyncMode('local');
-            }
+            loadFromLocalStorage();
+            setSyncMode('local');
           }
         } else {
-          // Not signed in - use localStorage
+          // Not signed in: use localStorage as a guest.
           loadFromLocalStorage();
           setSyncMode('local');
         }
@@ -109,9 +73,9 @@ export function AppProvider({ children }) {
     };
 
     loadUserData();
-  }, [isSignedIn, clerkUser, isLoaded]);
+  }, [isAuthenticated, role]);
 
-  // Load completed missions from database
+  // Load completed missions (already part of the /users/me payload; kept for clarity).
   useEffect(() => {
     const loadCompletedMissions = async () => {
       if (dbUser && syncMode === 'cloud') {
@@ -385,13 +349,176 @@ export function AppProvider({ children }) {
   const isSunday = () => new Date().getDay() === 0;
   const isMonday = () => new Date().getDay() === 1;
 
+  // Mission Answers Functions
+
+  // Load mission answers for a specific week
+  const loadMissionAnswers = async (weekNumber) => {
+    if (syncMode === 'cloud' && dbUser) {
+      // Load from database
+      const result = await answerService.getMissionAnswers(dbUser.id, weekNumber);
+      if (result.success) {
+        // Convert array to object: { [stepIndex]: answer }
+        const answersObj = {};
+        result.data.forEach(item => {
+          answersObj[item.stepIndex] = item.answer;
+        });
+        setMissionAnswers(prev => ({
+          ...prev,
+          [weekNumber]: answersObj
+        }));
+        return { success: true, data: answersObj };
+      }
+      return result;
+    } else {
+      // Load from localStorage
+      try {
+        const stored = localStorage.getItem(`mission-answers-${weekNumber}`);
+        if (stored) {
+          const answersObj = JSON.parse(stored);
+          setMissionAnswers(prev => ({
+            ...prev,
+            [weekNumber]: answersObj
+          }));
+          return { success: true, data: answersObj };
+        }
+        return { success: true, data: {} };
+      } catch (error) {
+        console.error('Error loading answers from localStorage:', error);
+        return { success: false, error: error.message };
+      }
+    }
+  };
+
+  // Save a step answer
+  const saveStepAnswer = async (weekNumber, stepIndex, answer) => {
+    // Validate answer length
+    if (answer && answer.length > 500) {
+      toast.error('Antwoord mag maximaal 500 karakters zijn');
+      return { success: false, error: 'Answer too long' };
+    }
+
+    if (syncMode === 'cloud' && dbUser) {
+      // Save to database
+      const result = await answerService.saveStepAnswer(dbUser.id, weekNumber, stepIndex, answer);
+      if (result.success) {
+        // Update local state
+        setMissionAnswers(prev => ({
+          ...prev,
+          [weekNumber]: {
+            ...(prev[weekNumber] || {}),
+            [stepIndex]: answer
+          }
+        }));
+      }
+      return result;
+    } else {
+      // Save to localStorage
+      try {
+        const updatedAnswers = {
+          ...(missionAnswers[weekNumber] || {}),
+          [stepIndex]: answer
+        };
+        localStorage.setItem(`mission-answers-${weekNumber}`, JSON.stringify(updatedAnswers));
+        setMissionAnswers(prev => ({
+          ...prev,
+          [weekNumber]: updatedAnswers
+        }));
+        return { success: true };
+      } catch (error) {
+        console.error('Error saving answer to localStorage:', error);
+        toast.error('Kon antwoord niet opslaan');
+        return { success: false, error: error.message };
+      }
+    }
+  };
+
+  // Admin save step answer (for editing other users' answers)
+  const adminSaveStepAnswer = async (targetUserId, weekNumber, stepIndex, answer) => {
+    // Validate answer length
+    if (answer && answer.length > 500) {
+      toast.error('Antwoord mag maximaal 500 karakters zijn');
+      return { success: false, error: 'Answer too long' };
+    }
+
+    if (syncMode === 'cloud' && dbUser) {
+      // Only allow in cloud mode
+      const result = await answerService.adminSaveStepAnswer(targetUserId, weekNumber, stepIndex, answer);
+      if (result.success) {
+        toast.success('Antwoord succesvol opgeslagen');
+      } else {
+        toast.error(result.error || 'Kon antwoord niet opslaan');
+      }
+      return result;
+    } else {
+      toast.error('Admin editing alleen beschikbaar in cloud mode');
+      return { success: false, error: 'Cloud mode required' };
+    }
+  };
+
+  // Get a specific step answer
+  const getStepAnswer = (weekNumber, stepIndex) => {
+    return missionAnswers[weekNumber]?.[stepIndex] || '';
+  };
+
+  // Get mission progress (percentage of steps with answers)
+  const getMissionProgress = (weekNumber, totalSteps) => {
+    const answers = missionAnswers[weekNumber] || {};
+    const answeredSteps = Object.keys(answers).filter(key => answers[key]?.trim().length > 0).length;
+    const percentage = totalSteps > 0 ? Math.round((answeredSteps / totalSteps) * 100) : 0;
+    return {
+      answeredSteps,
+      totalSteps,
+      percentage
+    };
+  };
+
+  // Load all answers for diary page
+  const loadAllAnswers = async () => {
+    if (syncMode === 'cloud' && dbUser) {
+      const result = await answerService.getAnswersByWeek(dbUser.id);
+      if (result.success) {
+        // Convert to the format we use in state
+        const formattedAnswers = {};
+        Object.keys(result.data).forEach(weekNumber => {
+          formattedAnswers[weekNumber] = {};
+          result.data[weekNumber].forEach(item => {
+            formattedAnswers[weekNumber][item.stepIndex] = item.answer;
+          });
+        });
+        setMissionAnswers(formattedAnswers);
+        return { success: true, data: formattedAnswers };
+      }
+      return result;
+    } else {
+      // Load all from localStorage
+      try {
+        const allAnswers = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('mission-answers-')) {
+            const weekNumber = parseInt(key.replace('mission-answers-', ''));
+            const stored = localStorage.getItem(key);
+            if (stored) {
+              allAnswers[weekNumber] = JSON.parse(stored);
+            }
+          }
+        }
+        setMissionAnswers(allAnswers);
+        return { success: true, data: allAnswers };
+      } catch (error) {
+        console.error('Error loading all answers from localStorage:', error);
+        return { success: false, error: error.message };
+      }
+    }
+  };
+
   const value = {
     // User state
     user,
     dbUser,
     loading,
-    isSignedIn,
-    clerkUser,
+    isSignedIn: isAuthenticated,
+    role,
     syncMode,
 
     // Computed
@@ -417,6 +544,15 @@ export function AppProvider({ children }) {
     getDayName,
     isSunday,
     isMonday,
+
+    // Mission Answers
+    missionAnswers,
+    loadMissionAnswers,
+    saveStepAnswer,
+    adminSaveStepAnswer,
+    getStepAnswer,
+    getMissionProgress,
+    loadAllAnswers,
   };
 
   return (

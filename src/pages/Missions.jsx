@@ -1,11 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { MISSIONS, getCategoryColor } from '../data/missions';
-import { Target, Zap, CheckCircle, Lock, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
+import { Target, Zap, CheckCircle, Lock, Lightbulb, ChevronDown, ChevronUp, Save, Check } from 'lucide-react';
+
+// StepInput Component with autosave and character limit
+function StepInput({ weekNumber, stepIndex, stepText, isCompleted }) {
+  const { getStepAnswer, saveStepAnswer } = useApp();
+  const [value, setValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const saveTimeoutRef = useRef(null);
+  const MAX_CHARS = 500;
+
+  // Load initial value
+  useEffect(() => {
+    const initialValue = getStepAnswer(weekNumber, stepIndex);
+    setValue(initialValue);
+  }, [weekNumber, stepIndex]);
+
+  // Autosave with debouncing
+  useEffect(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Don't save empty values on initial load
+    if (value === getStepAnswer(weekNumber, stepIndex)) {
+      return;
+    }
+
+    setSaving(true);
+    setSaved(false);
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      await saveStepAnswer(weekNumber, stepIndex, value);
+      setSaving(false);
+      setSaved(true);
+
+      // Hide "saved" indicator after 2 seconds
+      setTimeout(() => setSaved(false), 2000);
+    }, 1000); // Debounce: 1 second
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [value]);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    if (newValue.length <= MAX_CHARS) {
+      setValue(newValue);
+    }
+  };
+
+  const charCount = value.length;
+  const isNearLimit = charCount > MAX_CHARS * 0.8;
+  const isAtLimit = charCount >= MAX_CHARS;
+
+  return (
+    <div className="space-y-2">
+      <textarea
+        value={value}
+        onChange={handleChange}
+        placeholder="Schrijf hier jouw antwoord..."
+        className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-200 placeholder-dark-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all resize-none"
+        rows={3}
+      />
+
+      {/* Status and character count */}
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2">
+          {saving && (
+            <span className="text-amber-400 flex items-center gap-1">
+              <Save className="w-3 h-3 animate-pulse" />
+              Opslaan...
+            </span>
+          )}
+          {saved && !saving && (
+            <span className="text-emerald-400 flex items-center gap-1">
+              <Check className="w-3 h-3" />
+              Opgeslagen ✓
+            </span>
+          )}
+        </div>
+
+        <span className={`${
+          isAtLimit ? 'text-red-400 font-bold' :
+          isNearLimit ? 'text-amber-400' :
+          'text-dark-500'
+        }`}>
+          {charCount}/{MAX_CHARS}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 function MissionCard({ mission, isActive, isCompleted, isLocked, onComplete }) {
+  const { loadMissionAnswers, getMissionProgress } = useApp();
   const [expanded, setExpanded] = useState(isActive);
+  const [progress, setProgress] = useState(null);
   const colors = getCategoryColor(mission.category);
+
+  // Load answers when card is expanded
+  useEffect(() => {
+    if (expanded && !isLocked) {
+      loadMissionAnswers(mission.week).then(() => {
+        const progressData = getMissionProgress(mission.week, mission.steps.length);
+        setProgress(progressData);
+      });
+    }
+  }, [expanded, mission.week, isLocked]);
+
+  // Update progress when answers change
+  useEffect(() => {
+    if (expanded && !isLocked) {
+      const progressData = getMissionProgress(mission.week, mission.steps.length);
+      setProgress(progressData);
+    }
+  }, [expanded, mission.week, isLocked]);
 
   return (
     <div 
@@ -70,16 +185,52 @@ function MissionCard({ mission, isActive, isCompleted, isLocked, onComplete }) {
         <div className="px-4 pb-4 border-t border-dark-700/50 pt-4">
           <p className="text-dark-400 mb-4">{mission.description}</p>
 
-          {/* Steps */}
-          <div className="space-y-3 mb-4">
+          {/* Progress indicator */}
+          {progress && progress.answeredSteps > 0 && (
+            <div className="mb-4 p-3 bg-dark-800/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-dark-400">Voortgang antwoorden</span>
+                <span className="text-xs font-bold text-amber-400">{progress.percentage}% ingevuld</span>
+              </div>
+              <div className="w-full h-1.5 bg-dark-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500"
+                  style={{ width: `${progress.percentage}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Completed mission editable notice */}
+          {isCompleted && (
+            <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+              <div className="flex items-center gap-2 text-emerald-400">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-sm">Missie voltooid - je kunt je antwoorden nog steeds aanpassen</span>
+              </div>
+            </div>
+          )}
+
+          {/* Steps with Answer Inputs */}
+          <div className="space-y-4 mb-4">
             {mission.steps.map((step, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${
-                  isCompleted ? 'bg-emerald-500 text-white' : 'bg-dark-700 text-dark-400'
-                }`}>
-                  {isCompleted ? '✓' : i + 1}
+              <div key={i} className="space-y-2">
+                <div className="flex items-start gap-3">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${
+                    isCompleted ? 'bg-emerald-500 text-white' : 'bg-dark-700 text-dark-400'
+                  }`}>
+                    {isCompleted ? '✓' : i + 1}
+                  </div>
+                  <span className="text-dark-300 text-sm">{step}</span>
                 </div>
-                <span className="text-dark-300 text-sm">{step}</span>
+                <div className="ml-9">
+                  <StepInput
+                    weekNumber={mission.week}
+                    stepIndex={i}
+                    stepText={step}
+                    isCompleted={isCompleted}
+                  />
+                </div>
               </div>
             ))}
           </div>
