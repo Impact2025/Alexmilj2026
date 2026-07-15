@@ -39,7 +39,7 @@ function Layout() {
           {/* Logo & Greeting */}
           <div>
             <h1 className="text-xl md:text-2xl font-black bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
-              🏎️ REIS NAAR HET MILJOEN
+              🧭 IKIGAI · VIND JE KOMPAS
             </h1>
             <p className="text-dark-400 text-sm hidden md:block">
               {getGreeting()}{user ? `, ${user.name}` : ''}! Het is {getDayName()}.
@@ -116,10 +116,10 @@ function Layout() {
       {/* Floating Goal Footer */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
         <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-amber-500/30 flex items-center gap-3">
-          <span className="text-2xl">🎯</span>
+          <span className="text-2xl">🧭</span>
           <div className="text-center">
-            <div className="text-xs opacity-80">Jouw doel</div>
-            <div className="font-bold">€1.000.000</div>
+            <div className="text-xs opacity-80">Jouw kompas</div>
+            <div className="font-bold">Vind je Ikigai</div>
           </div>
           <span className="text-2xl">🏎️</span>
         </div>

@@ -155,7 +155,7 @@ function Settings() {
 
       {/* Version Info */}
       <div className="text-center text-dark-600 text-xs">
-        <p>Reis naar het Miljoen v1.0</p>
+        <p>Ikigai · Vind je Kompas v1.0</p>
         <p>Gemaakt met ❤️ door Papa & Claude</p>
       </div>
     </div>

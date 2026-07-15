@@ -61,7 +61,7 @@ function AdminDashboard() {
         <Shield className="w-8 h-8 text-amber-500" />
         <div>
           <h1 className="text-3xl font-black text-white">Admin Dashboard</h1>
-          <p className="text-dark-400">Beheer en monitor de reis naar het miljoen</p>
+          <p className="text-dark-400">Beheer en monitor de reis naar je Ikigai</p>
         </div>
       </div>
 

@@ -37,9 +37,9 @@ export default function PasswordGate({ onAuthenticate }) {
       <div className="relative z-10 w-full max-w-md">
         <div className="glass-card p-8 md:p-10">
           <div className="text-center mb-8">
-            <div className="text-6xl mb-4 vehicle-bounce">🏎️</div>
+            <div className="text-6xl mb-4 vehicle-bounce">🧭</div>
             <h1 className="text-3xl font-black bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
-              REIS NAAR HET MILJOEN
+IKIGAI · VIND JE KOMPAS
             </h1>
             <p className="text-dark-400 text-sm">Voer je wachtwoord in om verder te gaan</p>
           </div>

@@ -1,4 +1,7 @@
-// Weekly missions for the entire year
+// Weekly missions for the entire year.
+// Elke missie heeft een laagdrempelige basis (steps) én een open "masterChallenge"
+// (Meester-uitdaging) die het plafond verhoogt voor een kind dat meer aankan.
+// De Ikigai-pijler wordt afgeleid uit de categorie (zie IKIGAI + getIkigai).
 export const MISSIONS = [
   // Q1: FUNDAMENT (Week 1-13)
   {
@@ -14,7 +17,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Visualisatie",
-    tips: "Denk aan: de Lamborghini, je droomhuis, reizen, wat je wilt kunnen"
+    tips: "Denk aan: de Lamborghini, je droomhuis, reizen, wat je wilt kunnen",
+    masterChallenge: "Kies één droom van je board en maak een 'tijdlijn terug': welke 5 mijlpalen moeten er in welke volgorde gebeuren, en wat kun je deze maand al starten?"
   },
   {
     week: 2,
@@ -29,7 +33,8 @@ export const MISSIONS = [
     ],
     xpReward: 120,
     skill: "Financiën",
-    tips: "Tip uit 'De Rijkste Man van Babylon': betaal jezelf EERST"
+    tips: "Tip uit 'De Rijkste Man van Babylon': betaal jezelf EERST",
+    masterChallenge: "Bouw je eigen spaarsysteem in een spreadsheet met formules die automatisch 10% berekenen en je saldo per maand voor een heel jaar voorspellen."
   },
   {
     week: 3,
@@ -44,13 +49,14 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Technologie",
-    tips: "AI is een tool - jij blijft de baas en bepaalt wat je ermee doet"
+    tips: "AI is een tool - jij blijft de baas en bepaalt wat je ermee doet",
+    masterChallenge: "Laat AI én jij hetzelfde lastige probleem oplossen. Waar zat AI ernaast? Schrijf op waar jouw menselijke denken beter was dan de machine."
   },
   {
     week: 4,
     title: "Mijn Waarom",
     category: "mindset",
-    description: "Waarom wil JIJ €1 miljoen verdienen?",
+    description: "Waarom wil JIJ groeien en iets moois neerzetten?",
     steps: [
       "Schrijf 10 redenen op waarom je dit doel wilt bereiken",
       "Kies de 3 belangrijkste redenen",
@@ -59,7 +65,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Doelbepaling",
-    tips: "Als je 'waarom' sterk genoeg is, vind je altijd een 'hoe'"
+    tips: "Als je 'waarom' sterk genoeg is, vind je altijd een 'hoe'",
+    masterChallenge: "Bedenk je 'anti-waarom': wat gebeurt er over 10 jaar als je NIETS met je dromen doet? Vergelijk beide toekomsten met elkaar."
   },
   {
     week: 5,
@@ -74,7 +81,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Discipline",
-    tips: "Automatisch sparen = je hoeft er niet over na te denken"
+    tips: "Automatisch sparen = je hoeft er niet over na te denken",
+    masterChallenge: "Als je elke week 10% van €10 spaart én 5% rente per jaar krijgt: hoeveel heb je na 5 jaar? Maak een grafiek en leg de 'rente-op-rente'-knik uit."
   },
   {
     week: 6,
@@ -89,7 +97,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Groeimindset",
-    tips: "Elke succesvolle persoon heeft veel fouten gemaakt!"
+    tips: "Elke succesvolle persoon heeft veel fouten gemaakt!",
+    masterChallenge: "Interview 3 volwassenen over een échte mislukking. Zoek het patroon: wat hadden hun lessen met elkaar gemeen?"
   },
   {
     week: 7,
@@ -104,7 +113,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Presenteren",
-    tips: "Een goede intro: kort, energiek, en vertelt wat de video over gaat"
+    tips: "Een goede intro: kort, energiek, en vertelt wat de video over gaat",
+    masterChallenge: "Analyseer waarom een virale video werkt: schrijf de eerste 15 seconden woord-voor-woord uit en benoem 3 technieken die de kijker vasthouden."
   },
   {
     week: 8,
@@ -119,7 +129,8 @@ export const MISSIONS = [
     ],
     xpReward: 120,
     skill: "Kennis",
-    tips: "Napoleon Hill interviewde 500+ succesvolle mensen voor dit boek"
+    tips: "Napoleon Hill interviewde 500+ succesvolle mensen voor dit boek",
+    masterChallenge: "Kies één principe uit het boek en test het een week lang als experiment. Meet het resultaat en trek een eigen conclusie."
   },
   {
     week: 9,
@@ -134,7 +145,8 @@ export const MISSIONS = [
     ],
     xpReward: 200,
     skill: "Ondernemen",
-    tips: "Ideeën: autowassen, hond uitlaten, oude spullen verkopen, hulp aanbieden"
+    tips: "Ideeën: autowassen, hond uitlaten, oude spullen verkopen, hulp aanbieden",
+    masterChallenge: "Reken je 'winst per uur' uit: wat kostte 1 verkoop aan tijd en materiaal, en wat hield je netto over? Hoe zou je die winst per uur verdubbelen?"
   },
   {
     week: 10,
@@ -149,7 +161,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "AI & Creativiteit",
-    tips: "Goede prompts = specifiek + stijl + details"
+    tips: "Goede prompts = specifiek + stijl + details",
+    masterChallenge: "Ontwikkel een eigen herkenbare stijl: schrijf één 'stijl-prompt' die je hergebruikt, zodat vreemden je 10 werken als één serie herkennen."
   },
   {
     week: 11,
@@ -164,7 +177,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Positief denken",
-    tips: "Dankbare mensen zijn gelukkiger EN succesvoller"
+    tips: "Dankbare mensen zijn gelukkiger EN succesvoller",
+    masterChallenge: "Doe een experiment: schrijf 7 dagen 's ochtends 3 dankbaarheden en meet elke avond je humeur (1-10). Zie je een patroon in je eigen data?"
   },
   {
     week: 12,
@@ -174,12 +188,13 @@ export const MISSIONS = [
     steps: [
       "Vraag 3 mensen: waar ben ik goed in?",
       "Schrijf zelf 5 dingen op waar je goed in bent",
-      "Bedenk hoe je je sterke punten kunt gebruiken om geld te verdienen",
+      "Bedenk hoe je je sterke punten kunt gebruiken om iets moois te maken",
       "Presenteer je sterke punten in de video"
     ],
     xpReward: 120,
     skill: "Zelfkennis",
-    tips: "Focus op je sterke punten, niet je zwakke"
+    tips: "Focus op je sterke punten, niet je zwakke",
+    masterChallenge: "Combineer 2 van je sterke punten tot een uniek 'superpower-idee' dat niemand anders in je klas zó heeft. Pitch waarom die combinatie zeldzaam is."
   },
   {
     week: 13,
@@ -194,7 +209,8 @@ export const MISSIONS = [
     ],
     xpReward: 200,
     skill: "Reflectie",
-    tips: "Vier je successen! Je hebt al 12 weken volgehouden!"
+    tips: "Vier je successen! Je hebt al 12 weken volgehouden!",
+    masterChallenge: "Maak een dashboard van je eigen data (XP, gespaard, missies). Welke week gaf de meeste groei per uur, en waarom denk je dat?"
   },
 
   // Q2: BOUWEN (Week 14-26)
@@ -211,7 +227,8 @@ export const MISSIONS = [
     ],
     xpReward: 180,
     skill: "Ondernemerschap",
-    tips: "Start simpel - je eerste product hoeft niet perfect te zijn"
+    tips: "Start simpel - je eerste product hoeft niet perfect te zijn",
+    masterChallenge: "Bedenk 3 versies van je product voor 3 verschillende klanten. Leg uit waarom prijs én boodschap per klant verschillen."
   },
   {
     week: 15,
@@ -226,7 +243,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Netwerken",
-    tips: "Goede vragen: 'Wat is je grootste les?' 'Welke fout heb je gemaakt?'"
+    tips: "Goede vragen: 'Wat is je grootste les?' 'Welke fout heb je gemaakt?'",
+    masterChallenge: "Blijf doorvragen tot je een antwoord krijgt dat je verraste. Schrijf op welke vervolgvraag dat opleverde — de kunst zit in het doorvragen."
   },
   {
     week: 16,
@@ -241,7 +259,8 @@ export const MISSIONS = [
     ],
     xpReward: 120,
     skill: "Slim leren",
-    tips: "AI is je leer-assistent, niet je vervanger"
+    tips: "AI is je leer-assistent, niet je vervanger",
+    masterChallenge: "Laat AI je overhoren op je moeilijkste vak en jouw fouten uitleggen. Ontwerp daarna je eigen 'leer-prompt' die je steeds hergebruikt."
   },
   {
     week: 17,
@@ -256,7 +275,8 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Budgetteren",
-    tips: "Je kunt alleen verbeteren wat je meet"
+    tips: "Je kunt alleen verbeteren wat je meet",
+    masterChallenge: "Voorspel je uitgaven voor volgende maand vóórdat die begint. Vergelijk aan het eind je voorspelling met de werkelijkheid — hoe goed ken je jezelf?"
   },
   {
     week: 18,
@@ -271,7 +291,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Presenteren",
-    tips: "Structuur: Probleem → Oplossing → Waarom jij?"
+    tips: "Structuur: Probleem → Oplossing → Waarom jij?",
+    masterChallenge: "Maak 3 versies van je pitch: voor een kind, voor een oma en voor een investeerder. Wat verandert er per publiek en waarom?"
   },
   {
     week: 19,
@@ -286,7 +307,8 @@ export const MISSIONS = [
     ],
     xpReward: 250,
     skill: "Verkopen",
-    tips: "Je eerste verkoop is ALTIJD de moeilijkste - daarna wordt het makkelijker"
+    tips: "Je eerste verkoop is ALTIJD de moeilijkste - daarna wordt het makkelijker",
+    masterChallenge: "Vraag je klant ná de koop: waarom kocht je precies bij mij? Gebruik dat antwoord om je volgende verkoop concreet te verbeteren."
   },
   {
     week: 20,
@@ -301,7 +323,8 @@ export const MISSIONS = [
     ],
     xpReward: 120,
     skill: "Doorzettingsvermogen",
-    tips: "Elke 'nee' brengt je dichter bij een 'ja'"
+    tips: "Elke 'nee' brengt je dichter bij een 'ja'",
+    masterChallenge: "Houd data bij van 10 vragen: bij welke formulering kreeg je vaker 'ja'? Vorm een hypothese en test die op 5 nieuwe mensen."
   },
   {
     week: 21,
@@ -316,7 +339,8 @@ export const MISSIONS = [
     ],
     xpReward: 130,
     skill: "Design",
-    tips: "Goed design = simpel, duidelijk, opvallend"
+    tips: "Goed design = simpel, duidelijk, opvallend",
+    masterChallenge: "Ontwerp 2 versies van dezelfde poster en laat 10 mensen kiezen. Welk ontwerp wint, en kun je verklaren waarom?"
   },
   {
     week: 22,
@@ -331,7 +355,8 @@ export const MISSIONS = [
     ],
     xpReward: 140,
     skill: "Financiën",
-    tips: "Einstein: 'Compound interest is het 8e wereldwonder'"
+    tips: "Einstein: 'Compound interest is het 8e wereldwonder'",
+    masterChallenge: "Zoek de '72-regel' op en reken uit hoe lang geld erover doet om te verdubbelen bij 7%. Controleer die vuistregel daarna met een echte berekening."
   },
   {
     week: 23,
@@ -346,13 +371,14 @@ export const MISSIONS = [
     ],
     xpReward: 100,
     skill: "Netwerken",
-    tips: "Je netwerk = je netto waarde"
+    tips: "Je netwerk = je netto waarde",
+    masterChallenge: "Teken je netwerk als een kaart met lijnen. Wie verbindt jou met werelden die je zelf niet kent? Die 'bruggen' zijn goud waard."
   },
   {
     week: 24,
     title: "10 Side Hustle Ideeën",
     category: "actie",
-    description: "Bedenk 10 manieren om geld te verdienen",
+    description: "Bedenk 10 manieren om iets te verdienen",
     steps: [
       "Brainstorm 10 verschillende manieren om geld te verdienen",
       "Beoordeel elk idee: makkelijk/moeilijk, leuk/niet leuk",
@@ -361,7 +387,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Creativiteit",
-    tips: "Er zijn ALTIJD manieren om geld te verdienen - je moet ze alleen zien"
+    tips: "Er zijn ALTIJD manieren om geld te verdienen - je moet ze alleen zien",
+    masterChallenge: "Scoor je 10 ideeën op 3 assen (tijd, winst, plezier) in een tabel. Welk idee wint objectief — en durf je dat te kiezen, ook als het niet je favoriet is?"
   },
   {
     week: 25,
@@ -376,7 +403,8 @@ export const MISSIONS = [
     ],
     xpReward: 120,
     skill: "Groeien",
-    tips: "De beste ondernemers VRAGEN om feedback"
+    tips: "De beste ondernemers VRAGEN om feedback",
+    masterChallenge: "Vraag om je 'moeilijkste' feedback en bedank de gever oprecht. Schrijf op waarom juist die opmerking het meest waardevol was."
   },
   {
     week: 26,
@@ -391,13 +419,30 @@ export const MISSIONS = [
     ],
     xpReward: 200,
     skill: "Reflectie",
-    tips: "Je bent halverwege! Dat is ENORM!"
+    tips: "Je bent halverwege! Dat is ENORM!",
+    masterChallenge: "Stel jezelf een meetbaar zomer-doel met een deadline én een getal. Hoe weet je straks objectief of het gelukt is?"
   },
 
-  // Q3: ONDERNEMEN (Week 28-39)
+  // Q3: ONDERNEMEN (Week 27-39)
+  {
+    week: 27,
+    title: "Mijn Zomerproject",
+    category: "actie",
+    description: "Ontwerp en run je eigen missie van A tot Z",
+    steps: [
+      "Kies zelf een doel dat je deze zomer wilt bereiken",
+      "Verdeel het in stappen (zonder dat iemand je vertelt hoe)",
+      "Voer je plan uit en houd bij wat er gebeurt",
+      "Laat je zomerproject zien in de video"
+    ],
+    xpReward: 180,
+    skill: "Zelfsturing",
+    tips: "Dit is jouw missie - jij bent de baas van begin tot eind",
+    masterChallenge: "Documenteer je zomerproject als een mini-onderneming: start, tegenslag, oplossing, resultaat — alsof je het aan een investeerder presenteert."
+  },
   {
     week: 28,
-    title: "Mijn Eerste Product",
+    title: "Mijn Eerste Product Maken",
     category: "actie",
     description: "Verzin een product dat je zelf kunt maken en verkopen",
     steps: [
@@ -408,7 +453,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Ondernemen",
-    tips: "Begin klein. Eén verkocht product is een echte ondernemer."
+    tips: "Begin klein. Eén verkocht product is een echte ondernemer.",
+    masterChallenge: "Maak 3 prototypes en laat mensen ze testen. Verbeter je product op basis van wat er kapot ging of onduidelijk was."
   },
   {
     week: 29,
@@ -417,13 +463,14 @@ export const MISSIONS = [
     description: "Leer hoe je mensen vindt die jouw product willen",
     steps: [
       "Schrijf op wie jouw product zou kopen",
-      "Bedek 3 manieren om die mensen te bereiken",
+      "Bedenk 3 manieren om die mensen te bereiken",
       "Vraag aan 3 mensen of ze het leuk vinden",
       "Vertel in de video wat je leerde"
     ],
     xpReward: 150,
     skill: "Verkoop",
-    tips: "De beste klant is iemand die een probleem van je oplost."
+    tips: "De beste klant is iemand van wie je een probleem oplost.",
+    masterChallenge: "Beschrijf je 'ideale klant' in detail (leeftijd, wens, probleem) en zoek 3 plekken waar precies díe persoon te vinden is."
   },
   {
     week: 30,
@@ -438,7 +485,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Branding",
-    tips: "Een sterk merk maakt mensen blij als ze het zien."
+    tips: "Een sterk merk maakt mensen blij als ze het zien.",
+    masterChallenge: "Ontwerp je merk zó dat het ook zónder naam herkenbaar is. Test: herkennen mensen jouw kleuren/logo tussen 5 andere?"
   },
   {
     week: 31,
@@ -453,7 +501,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Discipline",
-    tips: "Als je iets 66 dagen doet, wordt het een gewoonte."
+    tips: "Als je iets 66 dagen doet, wordt het een gewoonte.",
+    masterChallenge: "Meet je vaardigheid op dag 1 en dag 7 met een getal (aantal, tijd of score). Bewijs met je data dat oefenen werkte."
   },
   {
     week: 32,
@@ -468,7 +517,8 @@ export const MISSIONS = [
     ],
     xpReward: 160,
     skill: "Beleggen",
-    tips: "Tijd is de grootste vriend van je geld."
+    tips: "Tijd is de grootste vriend van je geld.",
+    masterChallenge: "Simuleer 3 nep-investeringen (spaarrekening, aandeel, eigen bedrijf) en voorspel welke na 10 jaar wint. Onderbouw met een berekening én het risico."
   },
   {
     week: 33,
@@ -483,7 +533,8 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Pitch",
-    tips: "Geloof je er zelf in, dan gelooft de koper het ook."
+    tips: "Geloof je er zelf in, dan gelooft de koper het ook.",
+    masterChallenge: "Neem je pitch 2x op: één keer 'saai', één keer 'enthousiast'. Laat mensen raden welke echt is en analyseer wat energie met een boodschap doet."
   },
   {
     week: 34,
@@ -498,7 +549,8 @@ export const MISSIONS = [
     ],
     xpReward: 160,
     skill: "Teamwork",
-    tips: "Twee breinen verzinnen meer dan één."
+    tips: "Twee breinen verzinnen meer dan één.",
+    masterChallenge: "Verdeel de taken op basis van elkaars sterke punten in plaats van 50/50. Werd het resultaat beter? Waarom wel of niet?"
   },
   {
     week: 35,
@@ -513,13 +565,14 @@ export const MISSIONS = [
     ],
     xpReward: 150,
     skill: "Inzicht",
-    tips: "Weten waar geld naartoe gaat is de eerste stap naar rijkdom."
+    tips: "Weten waar geld naartoe gaat is de eerste stap naar rijkdom.",
+    masterChallenge: "Zoek je grootste 'geld-lek' van de week en bedenk een systeem (géén wilskracht!) dat het automatisch vermindert."
   },
   {
     week: 36,
     title: "Een Fail Flikken",
     category: "mindset",
-    description: "Doe expres iets wat mislukt en leer ervan",
+    description: "Doe expres iets wat kan mislukken en leer ervan",
     steps: [
       "Kies iets waarvan je denkt dat het mislukt",
       "Probeer het toch",
@@ -528,7 +581,8 @@ export const MISSIONS = [
     ],
     xpReward: 160,
     skill: "Veerkracht",
-    tips: "Elke uitvinder is honderd keer mislukt. Falen = leren."
+    tips: "Elke uitvinder is honderd keer mislukt. Falen = leren.",
+    masterChallenge: "Ontwerp een experiment waarvan de uitkomst écht onzeker is. Voorspel vooraf, voer uit, en vergelijk: verraste de werkelijkheid je?"
   },
   {
     week: 37,
@@ -543,7 +597,8 @@ export const MISSIONS = [
     ],
     xpReward: 170,
     skill: "Bouwen",
-    tips: "Een website is je winkel die nooit slaapt."
+    tips: "Een website is je winkel die nooit slaapt.",
+    masterChallenge: "Voeg één slimme functie toe die je site 'levend' maakt (een knop die iets doet, of een formulier). Leg uit welk probleem het oplost."
   },
   {
     week: 38,
@@ -551,14 +606,15 @@ export const MISSIONS = [
     category: "actie",
     description: "Verkoop een hulp-dienst in plaats van een product",
     steps: [
-      "Bedenk 3 diensten (gruntwerk, hond uitlaten, tuin)",
+      "Bedenk 3 diensten (klusjes, hond uitlaten, tuin)",
       "Kies er één",
       "Bied hem aan aan 2 buren",
       "Vertel in de video hoe het ging"
     ],
     xpReward: 170,
     skill: "Service",
-    tips: "Een dienst kost geen inkoop — pure winst."
+    tips: "Een dienst kost geen inkoop — pure winst.",
+    masterChallenge: "Bereken je uurtarief: wat is jouw tijd waard? Onderhandel bewust over de prijs en noteer welke aanpak werkte."
   },
   {
     week: 39,
@@ -573,10 +629,11 @@ export const MISSIONS = [
     ],
     xpReward: 200,
     skill: "Reflectie",
-    tips: "Drie kwartalen gedaan. Jij bent een machine."
+    tips: "Drie kwartalen gedaan. Jij bent een machine.",
+    masterChallenge: "Maak een grafiek van je XP-groei over 3 kwartalen. Waar zit de steilste lijn, en welke gewoonte veroorzaakte die groei?"
   },
 
-  // Q4: SCHAALEN & VIEREN (Week 40-52)
+  // Q4: SCHALEN & VIEREN (Week 40-52)
   {
     week: 40,
     title: "Mijn Prijs Strategie",
@@ -590,13 +647,14 @@ export const MISSIONS = [
     ],
     xpReward: 170,
     skill: "Pricing",
-    tips: "Te goedkoop = mensen denken dat het waardeloos is."
+    tips: "Te goedkoop = mensen denken dat het waardeloos is.",
+    masterChallenge: "Test 3 prijzen bij echte mensen (of een enquête) en teken de 'vraag-curve': bij welke prijs verdien je in totaal het meest?"
   },
   {
     week: 41,
     title: "Een Tweede Inkomen",
     category: "actie",
-    description: "Zorg dat je geld verdient terwijl je slaapt",
+    description: "Zorg dat je iets verdient terwijl je slaapt",
     steps: [
       "Zet iets te koop dat automatisch loopt",
       "Of: leen geld uit aan je spaarpot met rente",
@@ -605,7 +663,8 @@ export const MISSIONS = [
     ],
     xpReward: 180,
     skill: "Passief",
-    tips: "Rijke mensen hebben geld dat voor ze werkt."
+    tips: "Rijke mensen hebben geld dat voor ze werkt.",
+    masterChallenge: "Bedenk één ding dat geld oplevert terwijl je slaapt en reken uit hoeveel 'passief' inkomen je daarmee na een jaar zou hebben."
   },
   {
     week: 42,
@@ -619,8 +678,9 @@ export const MISSIONS = [
       "Vertel in de video waarom geven rijk maakt"
     ],
     xpReward: 170,
-    skill: "Generosity",
-    tips: "De hand die geeft, wordt altijd terug gevuld."
+    skill: "Vrijgevigheid",
+    tips: "De hand die geeft, wordt altijd terug gevuld.",
+    masterChallenge: "Geef anoniem iets weg en let op je eigen gevoel. Schrijf op waarom geven zónder krediet anders voelt dan geven mét dank."
   },
   {
     week: 43,
@@ -635,11 +695,12 @@ export const MISSIONS = [
     ],
     xpReward: 180,
     skill: "Doelen",
-    tips: "Een doel zonder datum is een wens. Geef het een datum."
+    tips: "Een doel zonder datum is een wens. Geef het een datum.",
+    masterChallenge: "Formuleer een doel dat je nu nog 'onmogelijk' vindt en breek het terug tot de allereerste stap die je deze week al kunt zetten."
   },
   {
     week: 44,
-    title: "Negotiëren",
+    title: "Onderhandelen",
     category: "skills",
     description: "Leer onderhandelen over prijs en afspraken",
     steps: [
@@ -649,8 +710,9 @@ export const MISSIONS = [
       "Laat je truc zien in de video"
     ],
     xpReward: 180,
-    skill: "Negotiation",
-    tips: "Alles is bespreekbaar. Je moet het alleen vragen."
+    skill: "Onderhandelen",
+    tips: "Alles is bespreekbaar. Je moet het alleen vragen.",
+    masterChallenge: "Onderhandel een echte deal (zakgeld, bedtijd, klus) met een voorstel dat óók goed is voor de ander. Win-win of niets."
   },
   {
     week: 45,
@@ -660,18 +722,19 @@ export const MISSIONS = [
     steps: [
       "Schrijf de namen op van wie al kocht",
       "Vraag ze om nog een keer te kopen",
-      "Bied iets specsiaals aan",
+      "Bied iets speciaals aan",
       "Deel je lijst in de video"
     ],
     xpReward: 180,
-    skill: "CRM",
-    tips: "Een trouwe klant is 10x meer waard dan 1 nieuwe."
+    skill: "Klantrelaties",
+    tips: "Een trouwe klant is 10x meer waard dan 1 nieuwe.",
+    masterChallenge: "Reken uit hoeveel 3 terugkerende klanten opleveren t.o.v. 1 nieuwe, en verklaar waarom een trouwe klant zoveel waardevoller is."
   },
   {
     week: 46,
     title: "Schaal het Op",
     category: "geld",
-    description: "Bedek hoe je meer verkoopt zonder meer werk",
+    description: "Bedenk hoe je meer verkoopt zonder meer werk",
     steps: [
       "Kies 1 product om in bulk te maken",
       "Maak er 5 tegelijk",
@@ -679,8 +742,9 @@ export const MISSIONS = [
       "Vertel in de video wat er gebeurde"
     ],
     xpReward: 190,
-    skill: "Scalability",
-    tips: "Doen wat werkt, maar dan 10x — dat is schalen."
+    skill: "Opschalen",
+    tips: "Doen wat werkt, maar dan 10x — dat is schalen.",
+    masterChallenge: "Vind de stap in je proces die het langst duurt (de 'bottleneck') en bedenk hoe je die 2x sneller maakt zonder kwaliteit te verliezen."
   },
   {
     week: 47,
@@ -695,11 +759,12 @@ export const MISSIONS = [
     ],
     xpReward: 180,
     skill: "Storytelling",
-    tips: "Mensen kopen van mensen die ze kennen en vertrouwen."
+    tips: "Mensen kopen van mensen die ze kennen en vertrouwen.",
+    masterChallenge: "Schrijf je verhaal in 3 zinnen zó dat een vreemde het onthoudt. Test of iemand het een dag later kan navertellen."
   },
   {
     week: 48,
-    title: "Gewoontes van Rijken",
+    title: "Gewoontes van Succesvolle Mensen",
     category: "mindset",
     description: "Leer 3 gewoontes van succesvolle mensen",
     steps: [
@@ -709,8 +774,9 @@ export const MISSIONS = [
       "Deel het in de video"
     ],
     xpReward: 190,
-    skill: "Habits",
-    tips: "Je wordt wie je elke dag bent."
+    skill: "Gewoontes",
+    tips: "Je wordt wie je elke dag bent.",
+    masterChallenge: "Bouw een 'gewoonte-stapel': koppel een nieuwe gewoonte aan iets dat je al dagelijks doet. Meet 7 dagen of het blijft plakken."
   },
   {
     week: 49,
@@ -725,26 +791,28 @@ export const MISSIONS = [
     ],
     xpReward: 190,
     skill: "Planning",
-    tips: "Een plan op papier is een droom met een deadline."
+    tips: "Een plan op papier is een droom met een deadline.",
+    masterChallenge: "Zet je 3 doelen op een tijdlijn met deadlines én bedenk vooraf wat er mis kán gaan (een 'plan B' per doel)."
   },
   {
     week: 50,
-    title: "De Lamborghini Check",
+    title: "De Kompas Check",
     category: "review",
-    description: "Check hoe dicht je bij de Lambo bent",
+    description: "Check hoe ver je gereisd bent op je eigen kompas",
     steps: [
       "Tel je totale XP",
       "Zie welk voertuig je nu hebt",
-      "Bedenk de laatste stappen naar de Lambo",
+      "Bedenk de laatste stappen naar je grote doel",
       "Maak een video van je reis tot nu toe"
     ],
     xpReward: 200,
     skill: "Reflectie",
-    tips: "Je bent niet meer de skateboarder van week 1."
+    tips: "Je bent niet meer de skateboarder van week 1.",
+    masterChallenge: "Vergelijk de 'jij van week 1' met nu: schrijf een brief aan je oude zelf met de 3 belangrijkste dingen die je hebt geleerd."
   },
   {
     week: 51,
-    title: "Celebrate & Share",
+    title: "Vieren & Delen",
     category: "mindset",
     description: "Vier wat je bereikt hebt en deel het",
     steps: [
@@ -754,14 +822,15 @@ export const MISSIONS = [
       "Vier het in de video"
     ],
     xpReward: 190,
-    skill: "Pride",
-    tips: "Vieren is belangrijk. Je hebt keihard gewerkt."
+    skill: "Trots",
+    tips: "Vieren is belangrijk. Je hebt keihard gewerkt.",
+    masterChallenge: "Deel je reis publiekelijk (video of verhaal) en let op de reacties. Wat inspireerde anderen het meest aan jouw verhaal?"
   },
   {
     week: 52,
-    title: "Het Eerste Miljoen Mindset",
+    title: "Mijn Ikigai Mindset",
     category: "review",
-    description: "Sluit het jaar af als echte miljonair in de maak",
+    description: "Sluit het jaar af als iemand die zijn kompas gevonden heeft",
     steps: [
       "Schrijf op wat je nu anders doet dan in week 1",
       "Stel je doel voor volgend jaar",
@@ -769,10 +838,31 @@ export const MISSIONS = [
       "Maak je allerbeste eindvideo!"
     ],
     xpReward: 250,
-    skill: "Mastery",
-    tips: "Een miljoen begin niet met geld. Het begint met wie je bent geworden."
+    skill: "Meesterschap",
+    tips: "Je kompas begint niet bij geld. Het begint bij wie je bent geworden.",
+    masterChallenge: "Schrijf je eigen 'jaar 2'-programma: bedenk 5 missies die jóu volgend jaar het meest zouden laten groeien. Jij bent nu de ontwerper."
   }
 ];
+
+// Ikigai-pijlers: de vier windrichtingen van je kompas (+ 'kompas' voor reviews).
+export const IKIGAI = {
+  hart:   { key: 'hart',   label: 'Waar je van houdt',        emoji: '❤️',  badge: 'bg-purple-500/30 text-purple-200' },
+  talent: { key: 'talent', label: 'Waar je goed in wordt',    emoji: '🛠️',  badge: 'bg-blue-500/30 text-blue-200' },
+  wereld: { key: 'wereld', label: 'Wat de wereld nodig heeft', emoji: '🌍',  badge: 'bg-orange-500/30 text-orange-200' },
+  waarde: { key: 'waarde', label: 'Waar je voor beloond wordt', emoji: '💶', badge: 'bg-emerald-500/30 text-emerald-200' },
+  kompas: { key: 'kompas', label: 'Je kompas',                emoji: '🧭',  badge: 'bg-amber-500/30 text-amber-200' },
+};
+
+const CATEGORY_TO_IKIGAI = {
+  mindset: 'hart',
+  skills: 'talent',
+  actie: 'wereld',
+  geld: 'waarde',
+  review: 'kompas',
+};
+
+// Resolve the Ikigai pillar for a mission (via its category).
+export const getIkigai = (category) => IKIGAI[CATEGORY_TO_IKIGAI[category]] || IKIGAI.kompas;
 
 // Get mission by week
 export const getMissionByWeek = (week) => {

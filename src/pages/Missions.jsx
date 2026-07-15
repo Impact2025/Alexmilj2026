@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { MISSIONS, getCategoryColor } from '../data/missions';
-import { Target, Zap, CheckCircle, Lock, Lightbulb, ChevronDown, ChevronUp, Save, Check } from 'lucide-react';
+import { MISSIONS, getCategoryColor, getIkigai } from '../data/missions';
+import { Target, Zap, CheckCircle, Lock, Lightbulb, ChevronDown, ChevronUp, Save, Check, Compass } from 'lucide-react';
 
 // StepInput Component with autosave and character limit
 function StepInput({ weekNumber, stepIndex, stepText, isCompleted }) {
@@ -103,6 +103,7 @@ function MissionCard({ mission, isActive, isCompleted, isLocked, onComplete }) {
   const [expanded, setExpanded] = useState(isActive);
   const [progress, setProgress] = useState(null);
   const colors = getCategoryColor(mission.category);
+  const ikigai = getIkigai(mission.category);
 
   // Load answers when card is expanded
   useEffect(() => {
@@ -156,6 +157,9 @@ function MissionCard({ mission, isActive, isCompleted, isLocked, onComplete }) {
               <div className="flex items-center gap-2">
                 <span className={`text-xs px-2 py-0.5 rounded-full ${colors.badge}`}>
                   Week {mission.week}
+                </span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${ikigai.badge}`} title={ikigai.label}>
+                  {ikigai.emoji} {ikigai.label}
                 </span>
                 {isActive && (
                   <span className="text-xs bg-amber-500/30 text-amber-300 px-2 py-0.5 rounded-full">
@@ -243,6 +247,18 @@ function MissionCard({ mission, isActive, isCompleted, isLocked, onComplete }) {
             </div>
           )}
 
+          {/* Meester-uitdaging (stretch challenge) */}
+          {mission.masterChallenge && (
+            <div className="rounded-xl p-4 mb-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Compass className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-sm font-bold text-amber-300">Meester-uitdaging</span>
+                <span className="text-[10px] uppercase tracking-wide text-amber-400/70 border border-amber-400/30 rounded px-1.5 py-0.5">extra pittig</span>
+              </div>
+              <p className="text-dark-200 text-sm">{mission.masterChallenge}</p>
+            </div>
+          )}
+
           {/* Skill Badge */}
           <div className="flex items-center justify-between">
             <span className="text-xs text-dark-500">
@@ -268,12 +284,13 @@ function Missions() {
   const { user, completeMission, isMissionCompleted } = useApp();
   const [filter, setFilter] = useState('all');
 
+  // Filters langs de vier Ikigai-windrichtingen (category = bron van waarheid).
   const categories = [
-    { id: 'all', label: 'Alles' },
-    { id: 'mindset', label: '🧠 Mindset' },
-    { id: 'geld', label: '💰 Geld' },
-    { id: 'skills', label: '🛠 Skills' },
-    { id: 'actie', label: '🚀 Actie' },
+    { id: 'all', label: '🧭 Alles' },
+    { id: 'mindset', label: '❤️ Waar je van houdt' },
+    { id: 'skills', label: '🛠️ Waar je goed in wordt' },
+    { id: 'actie', label: '🌍 Wat de wereld nodig heeft' },
+    { id: 'geld', label: '💶 Waar je voor beloond wordt' },
   ];
 
   const filteredMissions = filter === 'all' 
@@ -284,8 +301,8 @@ function Missions() {
     <div className="space-y-6 animate-slide-up">
       {/* Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-black text-white mb-2">🎯 Wekelijkse Missies</h1>
-        <p className="text-dark-400">52 weken, 52 uitdagingen. Elke week dichter bij je doel!</p>
+        <h1 className="text-2xl md:text-3xl font-black text-white mb-2">🧭 Wekelijkse Missies</h1>
+        <p className="text-dark-400">52 weken, 52 stappen richting je Ikigai. Elke missie heeft ook een Meester-uitdaging voor als je meer aankunt.</p>
       </div>
 
       {/* Filter Tabs */}
