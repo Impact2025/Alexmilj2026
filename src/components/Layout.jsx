@@ -16,8 +16,22 @@ const AnimatedBackground = () => (
 );
 
 function Layout() {
-  const { user, getGreeting, getDayName } = useApp();
+  const { user, loading, getGreeting, getDayName } = useApp();
   const { isAdmin } = useAuth();
+
+  // Wacht tot de user-data geladen is voordat we een pagina renderen.
+  // Zonder deze guard crasht b.v. /missies bij een refresh (user === null).
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <AnimatedBackground />
+        <div className="relative z-10 text-center">
+          <div className="text-6xl mb-4 vehicle-bounce">🧭</div>
+          <p className="text-dark-400">Laden...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Navigation items (conditionally add Admin for admins)
   const navItems = [
