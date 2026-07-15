@@ -9,5 +9,5 @@ export default async function handler(req, res) {
   if (role !== 'admin' && role !== 'user') return fail(res, 400, 'Invalid role');
   if (!checkPassword(role, password)) return fail(res, 401, 'Onjuist wachtwoord');
   const token = issueToken(role);
-  return ok(res, { token, role });
+  return ok(res, { success: true, token, role });
 }

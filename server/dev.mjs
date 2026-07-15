@@ -1,16 +1,16 @@
 import http from 'http';
 import { spawn } from 'child_process';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { config } from 'dotenv';
 
 // Load .env.local (server secrets) so the API layer can read them in dev.
-config();
+config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.env.local') });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const VITE_PORT = 5174; // avoid the likely-busy 5173
-const PORT = 4111;      // dev entry point (serves both SPA + /api)
+const VITE_PORT = Number(process.env.VITE_PORT) || 5174; // avoid the likely-busy 5173
+const PORT = Number(process.env.PORT) || 4111;           // dev entry point (serves both SPA + /api)
 
 // Start Vite as a child process (pure frontend, hot reload).
 const vite = spawn('npx', ['vite', '--port', String(VITE_PORT), '--strictPort'], {
@@ -22,12 +22,12 @@ const vite = spawn('npx', ['vite', '--port', String(VITE_PORT), '--strictPort'],
 async function handleApi(req, res) {
   try {
     const name = req.url.split('?')[0].replace(/^\/api\//, '').replace(/\/$/, '');
-    if (!name || name.includes('/') || name.startsWith('_')) {
+    if (!name || name.startsWith('_')) {
       res.statusCode = 404;
       res.setHeader('Content-Type', 'application/json');
       return res.end(JSON.stringify({ success: false, error: 'Unknown API route' }));
     }
-    const mod = await import(path.join(ROOT, 'api', `${name}.js`));
+    const mod = await import(pathToFileURL(path.join(ROOT, 'api', `${name}.js`)).href);
     await mod.default(req, res);
   } catch (err) {
     res.statusCode = 500;
@@ -39,7 +39,12 @@ async function handleApi(req, res) {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   if (url.pathname.startsWith('/api/')) {
-    return handleApi(req, res);
+    // Pre-read the body so handlers can use readBody(req) reliably (req.body).
+    let body = '';
+    req.on('data', (c) => { body += c; });
+    req.on('end', () => { req.body = body; handleApi(req, res); });
+    req.on('error', () => { res.statusCode = 400; res.end('bad request'); });
+    return;
   }
   // Proxy everything else to Vite (SPA + HMR + assets).
   const proxyReq = http.request(
