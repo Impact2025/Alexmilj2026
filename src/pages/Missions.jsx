@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { MISSIONS, getCategoryColor, getIkigai } from '../data/missions';
+import SummerChallenges from '../components/SummerChallenges';
 import { Target, Zap, CheckCircle, Lock, Lightbulb, ChevronDown, ChevronUp, Save, Check, Compass } from 'lucide-react';
 
 // StepInput Component with autosave and character limit
@@ -304,6 +305,9 @@ function Missions() {
         <h1 className="text-2xl md:text-3xl font-black text-white mb-2">🧭 Wekelijkse Missies</h1>
         <p className="text-dark-400">52 weken, 52 stappen richting je Ikigai. Elke missie heeft ook een Meester-uitdaging voor als je meer aankunt.</p>
       </div>
+
+      {/* ☀️ Zomer-editie (bonus, los van de 52 weekmissies) */}
+      <SummerChallenges />
 
       {/* Filter Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2">
