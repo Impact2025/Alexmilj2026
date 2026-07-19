@@ -35,7 +35,7 @@ export const XP_REWARDS = {
 
 export function AppProvider({ children }) {
   const toast = useToast();
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, offlineMode } = useAuth();
 
   const [user, setUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
@@ -43,11 +43,16 @@ export function AppProvider({ children }) {
   const [syncMode, setSyncMode] = useState('local'); // 'cloud' | 'local'
   const [missionAnswers, setMissionAnswers] = useState({}); // { [weekNumber]: { [stepIndex]: answer } }
 
+  // 🚗 Zomer-challenge voortgang (los van 52-week teller). Altijd lokaal beschikbaar,
+  // zodat de challenge ook zonder wifi speelbaar is.
+  // vorm: { [challengeId]: { steps: { [stepId]: bool }, notes: string, xpClaimed: bool } }
+  const [summerProgress, setSummerProgress] = useState({});
+
   // Load user data: cloud (server API, when authenticated) or local (guest/offline).
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        if (isAuthenticated && role) {
+        if (isAuthenticated && role && !offlineMode) {
           // Authenticated: load the user profile from the server (token already validated).
           const result = await userService.getUserByAuthId();
           if (result.success && result.data) {
@@ -59,7 +64,7 @@ export function AppProvider({ children }) {
             setSyncMode('local');
           }
         } else {
-          // Not signed in: use localStorage as a guest.
+          // Not signed in OR offline play: use localStorage as a guest.
           loadFromLocalStorage();
           setSyncMode('local');
         }
@@ -73,7 +78,29 @@ export function AppProvider({ children }) {
     };
 
     loadUserData();
-  }, [isAuthenticated, role]);
+  }, [isAuthenticated, role, offlineMode]);
+
+  // Laad zomer-challenge voortgang uit localStorage (werkt altijd, ook offline).
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('summer-progress');
+      if (saved) setSummerProgress(JSON.parse(saved));
+    } catch (error) {
+      console.error('Error loading summer progress:', error);
+    }
+  }, []);
+
+  // Sla zomer-challenge voortgang op (lokaal, debounced).
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem('summer-progress', JSON.stringify(summerProgress));
+      } catch (error) {
+        console.error('Failed to save summer progress:', error);
+      }
+    }, 300);
+    return () => clearTimeout(t);
+  }, [summerProgress]);
 
   // Load completed missions (already part of the /users/me payload; kept for clarity).
   useEffect(() => {
@@ -512,6 +539,72 @@ export function AppProvider({ children }) {
     }
   };
 
+  // 🌞 ZOMER-CHALLENGE ACTIES (altijd lokaal, werkt zonder wifi)
+  // ----------------------------------------------------------------------
+  const toggleSummerStep = useCallback((challengeId, stepId) => {
+    setSummerProgress((prev) => {
+      const cur = prev[challengeId] || { steps: {}, notes: '', xpClaimed: false };
+      const steps = { ...cur.steps, [stepId]: !cur.steps[stepId] };
+      return { ...prev, [challengeId]: { ...cur, steps } };
+    });
+  }, []);
+
+  const setSummerNotes = useCallback((challengeId, notes) => {
+    setSummerProgress((prev) => {
+      const cur = prev[challengeId] || { steps: {}, notes: '', xpClaimed: false };
+      return { ...prev, [challengeId]: { ...cur, notes } };
+    });
+  }, []);
+
+  const getSummerChallenge = useCallback(
+    (challengeId) =>
+      summerProgress[challengeId] || { steps: {}, notes: '', xpClaimed: false },
+    [summerProgress]
+  );
+
+  // Tel het aantal afgevinkte stappen van een challenge.
+  const countSummerSteps = useCallback(
+    (challengeId, totalSteps) => {
+      const steps = summerProgress[challengeId]?.steps || {};
+      const done = Object.values(steps).filter(Boolean).length;
+      return { done, total: totalSteps, pct: totalSteps ? Math.round((done / totalSteps) * 100) : 0 };
+    },
+    [summerProgress]
+  );
+
+  // Claim de XP voor een challenge (éénmalig). Alleen als alle verplichte
+  // stappen gecheckt zijn. Werkt ook offline (XP gaat naar local user).
+  const claimSummerXP = useCallback(
+    async (challengeId, xp, totalSteps) => {
+      const { done } = countSummerSteps(challengeId, totalSteps);
+      if (done < totalSteps) {
+        toast.warning(`Check eerst alle ${totalSteps} stappen aan!`);
+        return { success: false, error: 'not-all-done' };
+      }
+      const already = summerProgress[challengeId]?.xpClaimed;
+      if (already) {
+        toast.warning('Die XP heb je al geclaimd! 🏆');
+        return { success: false, error: 'already' };
+      }
+      setSummerProgress((prev) => ({
+        ...prev,
+        [challengeId]: { ...(prev[challengeId] || { steps: {}, notes: '' }), xpClaimed: true },
+      }));
+      await addXP(xp);
+      toast.success(`🌞 Zomer-avontuur voltooid! +${xp} XP!`);
+      return { success: true, xp };
+    },
+    [addXP, countSummerSteps, summerProgress, toast]
+  );
+
+  const resetSummerChallenge = useCallback((challengeId) => {
+    setSummerProgress((prev) => {
+      const next = { ...prev };
+      delete next[challengeId];
+      return next;
+    });
+  }, []);
+
   const value = {
     // User state
     user,
@@ -520,6 +613,7 @@ export function AppProvider({ children }) {
     isSignedIn: isAuthenticated,
     role,
     syncMode,
+    offlineMode,
 
     // Computed
     currentVehicle,
@@ -553,6 +647,15 @@ export function AppProvider({ children }) {
     getStepAnswer,
     getMissionProgress,
     loadAllAnswers,
+
+    // 🌞 Zomer-challenge
+    summerProgress,
+    toggleSummerStep,
+    setSummerNotes,
+    getSummerChallenge,
+    countSummerSteps,
+    claimSummerXP,
+    resetSummerChallenge,
   };
 
   return (

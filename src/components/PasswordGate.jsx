@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Lock, User, Shield } from 'lucide-react';
+import { Lock, User, Shield, WifiOff, Car } from 'lucide-react';
 import { api } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
 // Login gate. Passwords are verified SERVER-SIDE (/api/auth). No credentials
 // live in the client. On success we store the signed token and call onAuthenticate.
+//
+// 🚗 Offline modus: als er geen wifi is (bijv. in de auto), kan een kind op
+// "Speel offline" tikken en meteen verder zonder server. Alles wordt lokaal
+// opgeslagen en later (met wifi) gesynced.
 export default function PasswordGate({ onAuthenticate }) {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { startOffline } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,7 +105,22 @@ IKIGAI · VIND JE KOMPAS
             </button>
           </form>
 
-          <div className="mt-8 space-y-3">
+          {/* 🚗 Offline spelen — werkt zonder wifi */}
+          <div className="mt-6 pt-5 border-t border-dark-700/60">
+            <button
+              type="button"
+              onClick={startOffline}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-200 hover:bg-amber-500/20 transition-colors font-semibold"
+            >
+              <Car className="w-5 h-5" /> 🚗 Speel offline
+            </button>
+            <p className="mt-2 flex items-start gap-2 text-xs text-dark-500">
+              <WifiOff className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              Geen wifi? Speel gewoon door — je voortgang wordt op dit toestel bewaard en later gesynced.
+            </p>
+          </div>
+
+          <div className="mt-6 space-y-3">
             <div className="flex items-start gap-3 p-3 bg-dark-800/50 rounded-lg">
               <User className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
               <div>

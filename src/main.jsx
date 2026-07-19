@@ -9,6 +9,22 @@ import PasswordGate from './components/PasswordGate';
 import { useAuth } from './context/AuthContext';
 import './styles/index.css';
 
+// PWA: registreer de service worker (offline werken in de auto zonder wifi).
+// Bij een nieuwe versie melden we dat en herladen we zodra de gebruiker akkoord gaat.
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW({
+  onNeedRefresh() {
+    // Nieuwe versie klaar — herlaad stilletjes zodra de gebruiker de app opent.
+    if (confirm('Er is een nieuwe versie van de app. Herladen?')) {
+      registerSW.updateServiceWorker(true);
+    }
+  },
+  onOfflineReady() {
+    console.log('✅ App is klaar om offline te werken.');
+  },
+});
+
 // Content component that checks authentication (token-based, server-validated).
 function AppContent() {
   const { isAuthenticated, loading, authenticate } = useAuth();

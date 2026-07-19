@@ -313,18 +313,54 @@ npm run build
 - Voeg dezelfde environment variables toe
 - Deploy direct vanuit GitHub
 
+## 📱 Progressive Web App (PWA) — werk ook zonder wifi 🚗
+
+De app is een volwaardige PWA. Je kunt 'm op het startscherm zetten en in de auto
+(of waar dan ook zonder internet) gewoon gebruiken.
+
+### Wat er gebeurt er offline?
+- De hele app (HTML/JS/CSS + iconen + fonts) wordt één keer geladen en daarna
+  **geprecached** door een service worker (`dist/sw.js`). Zonder wifi laadt de app
+  direct uit die cache.
+- De data (XP, missies, zomer-challenge voortgang) staat al in `localStorage`
+  ("local mode") — dus ook je voortgang blijft beschikbaar.
+- Er is een **"🚗 Speel offline"** knop op het inlogscherm: tik die aan en je
+  bent meteen binnen, zónder wachtwoord of server. Alles wordt lokaal bewaard en
+  later (met wifi) gesynced naar de cloud.
+
+### Installeren (kind kan dit zelf)
+1. Open de app in de telefoonbrowser (Safari/Chrome).
+2. Deel-icoontje → **"Zet op beginscherm"** (of "Installeer app").
+3. Klaar — de app opent nu als eigen icoontje, volledig scherm, zonder adresbalk.
+
+### Technisch
+- `vite-plugin-pwa` genereert de service worker + precache automatisch bij `npm run build`.
+- `public/manifest.webmanifest` bevat naam, iconen en `display: standalone`.
+- `public/offline.html` is de fallback-pagina mocht een navigatie écht mislukken.
+- Iconen worden gegenereerd via `scripts/gen-icons.py` (PIL).
+
+## 🌞 Zomer-editie (interactief)
+
+4 bonus-zomeravonturen op het dashboard, speciaal voor een kind van ~10:
+- **Zomer-Onderneming**, **Ontdekkingsreiziger**, **Maker Week**, **Geef Iets Terug**.
+- Elke challenge heeft **checkbare stappen**, een notitieveld, een voortgangsbar
+  en een **Meester-uitdaging** + **Boost** (extra XP).
+- Vink alle stappen aan en claim de XP (ook offline). Voortgang staat lokaal
+  in `summer-progress` (localStorage).
+
 ## 📝 Volgende Stappen
 
 1. [x] Neon database integratie ✅
 2. [x] Clerk authenticatie ✅
 3. [x] Cloud sync ✅
 4. [x] Deployment configuratie ✅
-5. [ ] Push notificaties voor ochtendritueel
-6. [ ] Ouder dashboard (analytics, overzicht kind's voortgang)
-7. [ ] YouTube integratie voor video uploads
-8. [ ] Progressive Web App (PWA) features
-9. [ ] Gamification uitbreiden (leaderboards, challenges)
-10. [ ] Week 27-52 missies verfijnen
+5. [x] Progressive Web App (PWA) features ✅
+6. [x] Zomer-challenge interactief + offline ✅
+7. [ ] Push notificaties voor ochtendritueel
+8. [ ] Ouder dashboard (analytics, overzicht kind's voortgang)
+9. [ ] YouTube integratie voor video uploads
+10. [ ] Gamification uitbreiden (leaderboards, challenges)
+11. [ ] Week 27-52 missies verfijnen
 
 ## ❤️ Credits
 

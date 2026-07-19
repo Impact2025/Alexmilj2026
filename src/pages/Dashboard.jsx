@@ -5,8 +5,9 @@ import MorningRitual from '../components/MorningRitual';
 import VehicleCard from '../components/VehicleCard';
 import StatsCard from '../components/StatsCard';
 import MissionPreview from '../components/MissionPreview';
+import SummerChallenges from '../components/SummerChallenges';
 import { getMissionByWeek } from '../data/missions';
-import { Flame, Zap, PiggyBank, TrendingUp, Sparkles } from 'lucide-react';
+import { Flame, Zap, PiggyBank, TrendingUp, Sparkles, WifiOff } from 'lucide-react';
 
 function Dashboard() {
   const {
@@ -14,7 +15,9 @@ function Dashboard() {
     loading,
     currentVehicle,
     getGreeting,
-    isMonday
+    isMonday,
+    offlineMode,
+    syncMode
   } = useApp();
 
   // Show loading state while user data is being fetched
@@ -101,6 +104,23 @@ function Dashboard() {
           {/* Vehicle Progress Card */}
           <VehicleCard />
         </div>
+      </div>
+
+      {/* Offline / lokaal badge (handig in de auto zonder wifi) */}
+      {(offlineMode || syncMode === 'local') && (
+        <div className="mt-6 flex items-center gap-2 text-xs text-dark-400 bg-dark-800/40 border border-dark-700/60 rounded-xl px-4 py-3">
+          <WifiOff className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <span>
+            {offlineMode
+              ? '🚗 Offline modus — je speelt lokaal. Alles staat veilig op dit toestel en sync later automatisch.'
+              : '💾 Lokaal opgeslagen op dit toestel.'}
+          </span>
+        </div>
+      )}
+
+      {/* 🌞 Zomer-editie */}
+      <div id="zomer" className="mt-6 scroll-mt-24">
+        <SummerChallenges />
       </div>
     </div>
   );
